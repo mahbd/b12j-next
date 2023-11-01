@@ -1,0 +1,225 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+
+  accounts       Account[]
+  comments       Comment[]
+  contests       Contest[]
+  contestTesters ContestTester[]
+  contestWriters ContestWriter[]
+  problems       Problem[]
+  sessions       Session[]
+  submissions    Submission[]
+  tutorials      Tutorial[]
+}
+
+model Contest {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime
+  description String
+  endTime     DateTime
+  startTime   DateTime
+  title       String   @unique
+  userId      String   @db.ObjectId
+
+  user User @relation(fields: [userId], references: [id])
+
+  contestProblems ContestProblem[]
+  contestTesters  ContestTester[]
+  contestWriters  ContestWriter[]
+  submissions     Submission[]
+  tutorials       Tutorial[]
+}
+
+model Problem {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  checkerId       String    @db.ObjectId
+  correctCode     String
+  correctLanguage Language
+  createdAt       DateTime
+  description     String
+  difficulty      Int
+  exampleQuantity Int
+  hiddenTill      DateTime?
+  inputTerms      String
+  memoryLimit     Int
+  notice          String?
+  outputTerms     String
+  timeLimit       Int
+  title           String    @unique
+  userId          String    @db.ObjectId
+
+  checker Checker @relation(fields: [checkerId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+
+  comments        Comment[]
+  contestProblems ContestProblem[]
+  submissions     Submission[]
+  testCases       TestCase[]
+  tutorials       Tutorial[]
+}
+
+model Tutorial {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  contestId   String?  @db.ObjectId
+  createdAt   DateTime
+  hiddenTill  DateTime
+  problemId   String?  @db.ObjectId
+  description String
+  title       String
+  userId      String   @db.ObjectId
+
+  contest Contest? @relation(fields: [contestId], references: [id])
+  problem Problem? @relation(fields: [problemId], references: [id])
+  user    User     @relation(fields: [userId], references: [id])
+
+  comments Comment[]
+}
+
+model Comment {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  parentId String?  @db.ObjectId
+  parent   Comment? @relation("CommentChildren", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  problemId  String? @db.ObjectId
+  tutorialId String? @db.ObjectId
+  userId     String  @db.ObjectId
+
+  problem  Problem?  @relation(fields: [problemId], references: [id])
+  tutorial Tutorial? @relation(fields: [tutorialId], references: [id])
+  user     User      @relation(fields: [userId], references: [id])
+
+  children Comment[] @relation("CommentChildren")
+}
+
+model ContestTester {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  contestId String @db.ObjectId
+  userId    String @db.ObjectId
+
+  contest Contest @relation(fields: [contestId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+}
+
+model ContestWriter {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  contestId String @db.ObjectId
+  userId    String @db.ObjectId
+
+  contest Contest @relation(fields: [contestId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+}
+
+model ContestProblem {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  contestId   String   @db.ObjectId
+  createdAt   DateTime
+  problemChar String
+  problemId   String   @db.ObjectId
+
+  contest Contest @relation(fields: [contestId], references: [id])
+  problem Problem @relation(fields: [problemId], references: [id])
+}
+
+enum Verdict {
+  ACCEPTED
+  WRONG_ANSWER
+  TIME_LIMIT_EXCEEDED
+  RUNTIME_ERROR
+  COMPILATION_ERROR
+  MEMORY_LIMIT_EXCEEDED
+  PARTIALLY_CORRECT
+  SKIPPED
+  IDLENESS_LIMIT_EXCEEDED
+  TESTING
+  PRETEST_PASSED
+  PRETEST_FAILED
+  QUEUED
+}
+
+model Submission {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  code      String
+  contestId String?  @db.ObjectId
+  createdAt DateTime
+  details   String
+  language  String
+  problemId String   @db.ObjectId
+  userId    String   @db.ObjectId
+  verdict   Verdict
+
+  contest Contest? @relation(fields: [contestId], references: [id])
+  problem Problem  @relation(fields: [problemId], references: [id])
+  user    User     @relation(fields: [userId], references: [id])
+}
+
+model TestCase {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime
+  inputs    String
+  output    String
+  problemId String   @db.ObjectId
+
+  problem Problem @relation(fields: [problemId], references: [id])
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum Language {
+  C_CPP
+  PYTHON3
+}
+
+model Checker {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  language Language
+  name     String
+  problems Problem[]
+  source   String
+}
