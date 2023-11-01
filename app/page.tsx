@@ -1,5 +1,9 @@
-import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
-  return <button className="btn btn-primary">Hello Primary</button>;
+  return (
+    <div>
+      <Link href="/api/auth/signin">Login</Link>
+    </div>
+  );
 }
