@@ -27,8 +27,8 @@ model User {
 
 model Contest {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt   DateTime
-  description String
+  createdAt   DateTime @default(now())
+  description String?
   endTime     DateTime
   startTime   DateTime
   title       String   @unique
@@ -48,16 +48,16 @@ model Problem {
   checkerId       String    @db.ObjectId
   correctCode     String
   correctLanguage Language
-  createdAt       DateTime
+  createdAt       DateTime  @default(now())
   description     String
-  difficulty      Int
-  exampleQuantity Int
+  difficulty      Int       @default(500)
+  exampleQuantity Int       @default(1)
   hiddenTill      DateTime?
   inputTerms      String
-  memoryLimit     Int
+  memoryLimit     Int       @default(256)
   notice          String?
   outputTerms     String
-  timeLimit       Int
+  timeLimit       Int       @default(1000)
   title           String    @unique
   userId          String    @db.ObjectId
 
