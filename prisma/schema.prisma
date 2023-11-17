@@ -217,9 +217,10 @@ enum Language {
 }
 
 model Checker {
-  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
   language Language
   name     String
-  problems Problem[]
   source   String
+
+  problems Problem[]
 }

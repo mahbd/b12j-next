@@ -42,7 +42,7 @@ const ProblemForm = ({ checkers }: Props) => {
       })}
     >
       <div className="flex flex-col items-center">
-        <div className="flex flex-col w-1/2">
+        <div className="flex flex-col w-full">
           <label htmlFor="checkerId">Select Checker</label>
           <select
             className="select select-bordered select-sm w-full"
@@ -55,7 +55,7 @@ const ProblemForm = ({ checkers }: Props) => {
             ))}
           </select>
         </div>
-        <div className="flex flex-col w-1/2">
+        <div className="flex flex-col w-full">
           <label htmlFor="checkerId">Correct Code</label>
           <textarea
             className="textarea h-24 textarea-bordered"
@@ -63,7 +63,7 @@ const ProblemForm = ({ checkers }: Props) => {
           />
           <ErrorMessage>{errors.correctCode?.message}</ErrorMessage>
         </div>
-        <div className="flex flex-col w-1/2">
+        <div className="flex flex-col w-full">
           <label htmlFor="checkerId">Correct Language</label>
           <select
             className="select select-bordered select-sm w-full"
@@ -74,7 +74,7 @@ const ProblemForm = ({ checkers }: Props) => {
           </select>
           <ErrorMessage>{errors.correctLanguage?.message}</ErrorMessage>
         </div>
-        <div className="prose flex flex-col w-1/2">
+        <div className="prose flex flex-col w-full">
           <label htmlFor="description">Description</label>
           <Controller
             name="description"
@@ -91,7 +91,7 @@ const ProblemForm = ({ checkers }: Props) => {
           />
           <ErrorMessage>{errors.description?.message}</ErrorMessage>
         </div>
-        <div className="prose flex flex-col w-1/2">
+        <div className="prose flex flex-col w-full">
           <label htmlFor="description">Input</label>
           <Controller
             name="inputTerms"
@@ -108,7 +108,7 @@ const ProblemForm = ({ checkers }: Props) => {
           />
           <ErrorMessage>{errors.inputTerms?.message}</ErrorMessage>
         </div>
-        <div className="prose flex flex-col w-1/2">
+        <div className="prose flex flex-col w-full">
           <label htmlFor="description">Output</label>
           <Controller
             name="outputTerms"
@@ -125,7 +125,7 @@ const ProblemForm = ({ checkers }: Props) => {
           />
           <ErrorMessage>{errors.outputTerms?.message}</ErrorMessage>
         </div>
-        <div className="flex flex-col w-1/2">
+        <div className="flex flex-col w-full">
           <label htmlFor="title">Title</label>
           <input
             type="text"
