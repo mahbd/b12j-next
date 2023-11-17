@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProblemFormData, problemSchema } from "./schema";
 import { onSubmit } from "./actions";
-import { Checker } from "@/prisma/client";
+import { Checker } from "@prisma/client";
 import { Controller, useForm } from "react-hook-form";
 import { ErrorMessage, Spinner, TextEditor } from "@/components";
 import { redirect } from "next/navigation";
@@ -27,6 +27,7 @@ const ProblemForm = ({ checkers }: Props) => {
 
   return (
     <form
+      className="flex flex-col items-center"
       onSubmit={handleSubmit(async (data: ProblemFormData) => {
         console.log(data);
         setIsSubmitting(true);

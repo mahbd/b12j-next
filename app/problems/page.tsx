@@ -28,14 +28,14 @@ const ProblemsPage = async ({ searchParams }: Props) => {
               <th>Difficulty</th>
             </tr>
           </thead>
-          {problems.map((problem) => (
-            <tbody>
-              <tr className="border-2">
+          <tbody>
+            {problems.map((problem) => (
+              <tr className="border-2" key={problem.id}>
                 <td>{problem.title}</td>
                 <td>{problem.difficulty}</td>
               </tr>
-            </tbody>
-          ))}
+            ))}
+          </tbody>
         </table>
         <Pagination itemCount={itemCount} limit={limit} offset={offset} />
       </div>

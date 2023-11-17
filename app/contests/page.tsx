@@ -23,13 +23,13 @@ const ContestsPage = async () => {
       <h1 className="text-4xl font-bold">Current or Upcoming Contests</h1>
       <div className="flex flex-wrap">
         {upcoming_contests.map((contest) => (
-          <ContestCard contest={contest} />
+          <ContestCard contest={contest} key={contest.id} />
         ))}
       </div>
       <h1 className="text-4xl font-bold">Past Contests</h1>
       <div className="flex flex-wrap">
         {past_contests.map((contest) => (
-          <ContestCard contest={contest} />
+          <ContestCard contest={contest} key={contest.id} />
         ))}
       </div>
     </div>
@@ -61,7 +61,7 @@ const ContestCard = async ({ contest }: { contest: Contest }) => {
             <p className="font-bold">Writers</p>
             <p>
               {contestWriters.map((writer) => (
-                <span>{writer.userId}</span>
+                <span key={writer.id}>{writer.userId}</span>
               ))}
             </p>
           </div>
@@ -69,7 +69,7 @@ const ContestCard = async ({ contest }: { contest: Contest }) => {
             <p className="font-bold">Testers</p>
             <p>
               {contestTesters.map((tester) => (
-                <span>{tester.userId}</span>
+                <span key={tester.id}>{tester.userId}</span>
               ))}
             </p>
           </div>
