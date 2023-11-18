@@ -36,14 +36,26 @@ const page = async ({ params: { id }, searchParams }: Props) => {
       <h2>Output</h2>
       <div dangerouslySetInnerHTML={{ __html: problem.outputTerms }} />
       <h2>Example</h2>
-      {testCases.map((testCase) => (
-        <div key={testCase.id}>
-          <h3>Input</h3>
-          <pre>{testCase.inputs}</pre>
-          <h3>Output</h3>
-          <pre>{testCase.outputs}</pre>
-        </div>
-      ))}
+      <table>
+        <thead>
+          <tr>
+            <th>Input</th>
+            <th>Output</th>
+          </tr>
+        </thead>
+        <tbody>
+          {testCases.map((testCase) => (
+            <tr key={testCase.id}>
+              <td>
+                <pre>{testCase.inputs}</pre>
+              </td>
+              <td>
+                <pre>{testCase.outputs}</pre>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       <SubmissionForm problemId={id} contestId={searchParams?.contestId} />
     </div>
   );

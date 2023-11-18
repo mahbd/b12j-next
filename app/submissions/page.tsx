@@ -1,9 +1,11 @@
 import prisma from "@/prisma/client";
 import React from "react";
 import { readableDateTime } from "../../components/helpers";
+import Link from "next/link";
 
 const Submission = async () => {
   const submissions = await prisma.submission.findMany({
+    orderBy: { createdAt: "desc" },
     include: { user: true, problem: true },
   });
   return (
@@ -26,7 +28,14 @@ const Submission = async () => {
               <td>{submission.id}</td>
               <td>{readableDateTime(submission.createdAt.toISOString())}</td>
               <td>{submission.user.email}</td>
-              <td>{submission.problem.title}</td>
+              <td>
+                <Link
+                  className="link link-primary"
+                  href={`/problems/${submission.problemId}`}
+                >
+                  {submission.problem.title}
+                </Link>
+              </td>
               <td>{submission.language}</td>
               <td>{submission.verdict}</td>
             </tr>

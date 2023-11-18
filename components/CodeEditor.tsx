@@ -1,3 +1,5 @@
+"use client";
+
 import AceEditor from "react-ace";
 import dynamic from "next/dynamic";
 

@@ -79,7 +79,7 @@ const SubmissionForm = ({ problemId, contestId }: Props) => {
         className="btn btn-primary btn-sm border-2"
         disabled={isSubmitting}
       >
-        {isSubmitting ? <Spinner /> : "Submit"}
+        {isSubmitting && <Spinner />} Submit
       </button>
     </form>
   );

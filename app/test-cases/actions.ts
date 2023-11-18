@@ -6,6 +6,7 @@ import { getServerSession } from "next-auth";
 import authOptions from "@/auth/authOptions";
 import { notFound } from "next/navigation";
 import { Language } from "@prisma/client";
+import { LANGUAGE_MAP } from "@/components";
 
 export const createNewTestCase = async (dataStr: string, problemId: string) => {
   const session = await getServerSession(authOptions);
@@ -41,11 +42,6 @@ export const generateOutput = async (inputs: string, problemId: string) => {
   if (!problem) {
     notFound();
   }
-  const LANGUAGE_MAP = {
-    [Language.C_CPP]: 54,
-    [Language.JAVASCRIPT]: 63,
-    [Language.PYTHON3]: 71,
-  };
   const languageCode = LANGUAGE_MAP[problem.correctLanguage];
   const sourceCode = problem.correctCode;
   const timeLimit = problem.timeLimit;
