@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import NavBar from "./NavBar";
 import AuthProvider from "@/auth/Provider";
 import Sidebar from "@/components/Sidebar";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -19,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" data-theme="winter">
-      <body className={inter.className}>
+      <body>
         <AuthProvider>
           <NavBar />
           <div className="md:flex md:gap-4">

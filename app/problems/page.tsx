@@ -1,5 +1,6 @@
 import Pagination from "@/components/Pagination";
 import prisma from "@/prisma/client";
+import Link from "next/link";
 import React from "react";
 
 interface Props {
@@ -20,25 +21,35 @@ const ProblemsPage = async ({ searchParams }: Props) => {
 
   return (
     <div>
-      <div className="flex flex-col justify-center overflow-x-auto gap-2">
-        <table className="table table-md table-auto w-auto border-2">
-          <thead>
-            <tr className="border-2">
-              <th>Problem</th>
-              <th>Difficulty</th>
+      <h1 className="text-center">Problem List</h1>
+      <table className="table table-md table-auto w-auto">
+        <thead>
+          <tr>
+            <th>Problem</th>
+            <th>Status</th>
+            <th>Difficulty</th>
+            <th>Solve Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          {problems.map((problem) => (
+            <tr key={problem.id}>
+              <td>
+                <Link
+                  className="link link-primary"
+                  href={`/problems/${problem.id}`}
+                >
+                  {problem.title}
+                </Link>
+              </td>
+              <td>Solved</td>
+              <td>{problem.difficulty}</td>
+              <td>{problem.solveCount}</td>
             </tr>
-          </thead>
-          <tbody>
-            {problems.map((problem) => (
-              <tr className="border-2" key={problem.id}>
-                <td>{problem.title}</td>
-                <td>{problem.difficulty}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <Pagination itemCount={itemCount} limit={limit} offset={offset} />
-      </div>
+          ))}
+        </tbody>
+      </table>
+      <Pagination itemCount={itemCount} limit={limit} offset={offset} />
     </div>
   );
 };

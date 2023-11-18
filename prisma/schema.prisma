@@ -22,6 +22,7 @@ model User {
   problems       Problem[]
   sessions       Session[]
   submissions    Submission[]
+  testCases      TestCase[]
   tutorials      Tutorial[]
 }
 
@@ -57,7 +58,8 @@ model Problem {
   memoryLimit     Int       @default(256)
   notice          String?
   outputTerms     String
-  timeLimit       Int       @default(1000)
+  solveCount      Int       @default(0)
+  timeLimit       Int       @default(1)
   title           String    @unique
   userId          String    @db.ObjectId
 
@@ -140,25 +142,25 @@ enum Verdict {
   RUNTIME_ERROR
   COMPILATION_ERROR
   MEMORY_LIMIT_EXCEEDED
-  PARTIALLY_CORRECT
   SKIPPED
   IDLENESS_LIMIT_EXCEEDED
   TESTING
   PRETEST_PASSED
   PRETEST_FAILED
   QUEUED
+  PENDING
 }
 
 model Submission {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   code      String
   contestId String?  @db.ObjectId
-  createdAt DateTime
-  details   String
-  language  String
+  createdAt DateTime @default(now())
+  details   String?
+  language  Language
   problemId String   @db.ObjectId
   userId    String   @db.ObjectId
-  verdict   Verdict
+  verdict   Verdict  @default(PENDING)
 
   contest Contest? @relation(fields: [contestId], references: [id])
   problem Problem  @relation(fields: [problemId], references: [id])
@@ -167,12 +169,14 @@ model Submission {
 
 model TestCase {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt DateTime
+  createdAt DateTime @default(now())
   inputs    String
-  output    String
+  outputs   String
   problemId String   @db.ObjectId
+  userId    String   @db.ObjectId
 
   problem Problem @relation(fields: [problemId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
 }
 
 model Account {
@@ -212,6 +216,7 @@ model VerificationToken {
 }
 
 enum Language {
+  JAVASCRIPT
   C_CPP
   PYTHON3
 }

@@ -42,6 +42,7 @@ interface Props {
 const TextEditor = ({ name, placeholder, onChange, value, error }: Props) => {
   return (
     <div
+      className="prose"
       style={{
         width: "100%",
         height: "auto",

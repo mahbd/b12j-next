@@ -1,7 +1,7 @@
 import prisma from "@/prisma/client";
 import { Contest } from "@prisma/client";
 import React from "react";
-import { readableDateTime } from "../helpers";
+import { readableDateTime } from "../../components/helpers";
 
 const ContestsPage = async () => {
   const upcoming_contests = await prisma.contest.findMany({
