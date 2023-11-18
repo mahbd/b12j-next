@@ -1,6 +1,7 @@
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
 import SubmissionForm from "./SubmissionForm";
+import Link from "next/link";
 
 interface Props {
   params: { id: string };
@@ -22,7 +23,8 @@ const page = async ({ params: { id }, searchParams }: Props) => {
     take: problem.exampleQuantity,
   });
   return (
-    <div>
+    <div className="w-full">
+      <Link href={`/test-cases/new?problemId=${id}`}>Add Test Case</Link>
       <div className="text-center my-5">
         <h1>{problem.title}</h1>
         <p>Time Limit per test: {problem.timeLimit} second(s)</p>

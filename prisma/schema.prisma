@@ -55,7 +55,7 @@ model Problem {
   exampleQuantity Int       @default(1)
   hiddenTill      DateTime?
   inputTerms      String
-  memoryLimit     Int       @default(256)
+  memoryLimit     Int       @default(262144)
   notice          String?
   outputTerms     String
   solveCount      Int       @default(0)

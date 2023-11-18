@@ -4,14 +4,24 @@ import { ErrorMessage, Spinner } from "@/components";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import z from "zod";
-import { generateOutput, onSubmit } from "./actions";
+import { generateOutput, createNewTestCase } from "../actions";
 import { testCaseSchema } from "./testCaseSchema";
 import { useState } from "react";
 
-export type CheckerFormData = z.infer<typeof testCaseSchema>;
+interface Props {
+  searchParams?: {
+    problemId: string;
+  };
+}
 
-const Checker = () => {
-  const problemId = "fkl_djs_akl_fkl_dsf_kkl";
+type CheckerFormData = z.infer<typeof testCaseSchema>;
+
+const Checker = ({ searchParams }: Props) => {
+  const problemId = searchParams?.problemId;
+  if (!problemId) {
+    return <div>Problem ID not set</div>;
+  }
+
   const {
     register,
     handleSubmit,
@@ -31,7 +41,7 @@ const Checker = () => {
       <form
         onSubmit={handleSubmit(async (data: CheckerFormData) => {
           setIsSubmitting(true);
-          const res = await onSubmit(JSON.stringify(data), problemId);
+          const res = await createNewTestCase(JSON.stringify(data), problemId);
           setIsSubmitting(false);
           if (res.ok) {
             alert("Checker created successfully");
@@ -61,27 +71,32 @@ const Checker = () => {
             />
             <ErrorMessage>{errors.outputs?.message}</ErrorMessage>
           </div>
-          <button
-            type="button"
-            className="btn btn-success btn-sm border-2"
-            disabled={isGenerating}
-            onClick={async () => {
-              setIsGenerating(true);
-              const res = await generateOutput(getValues("inputs"), problemId);
-              setIsGenerating(false);
-              setValue("outputs", res);
-            }}
-          >
-            {isGenerating ? <Spinner /> : "Generate Output"}
-          </button>
+          <div className="flex flex-row w-full justify-between">
+            <button
+              type="button"
+              className="btn btn-success btn-sm border-2"
+              disabled={isGenerating || isSubmitting}
+              onClick={async () => {
+                setIsGenerating(true);
+                const res = await generateOutput(
+                  getValues("inputs"),
+                  problemId
+                );
+                setIsGenerating(false);
+                setValue("outputs", res);
+              }}
+            >
+              {isGenerating && <Spinner />} Generate Output
+            </button>
 
-          <button
-            type="submit"
-            className="btn btn-primary btn-sm border-2"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? <Spinner /> : "Submit"}
-          </button>
+            <button
+              type="submit"
+              className="btn btn-primary btn-sm border-2"
+              disabled={isSubmitting || isGenerating}
+            >
+              {isSubmitting && <Spinner />} Submit
+            </button>
+          </div>
         </div>
       </form>
     </div>
