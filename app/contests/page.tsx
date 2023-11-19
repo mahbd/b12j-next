@@ -2,6 +2,7 @@ import prisma from "@/prisma/client";
 import { Contest } from "@prisma/client";
 import React from "react";
 import { readableDateTime } from "../../components/helpers";
+import Link from "next/link";
 
 const ContestsPage = async () => {
   const upcoming_contests = await prisma.contest.findMany({
@@ -20,13 +21,13 @@ const ContestsPage = async () => {
   });
   return (
     <div className="w-full">
-      <h1 className="text-4xl font-bold">Current or Upcoming Contests</h1>
+      <h1>Current or Upcoming Contests</h1>
       <div className="flex flex-wrap">
         {upcoming_contests.map((contest) => (
           <ContestCard contest={contest} key={contest.id} />
         ))}
       </div>
-      <h1 className="text-4xl font-bold">Past Contests</h1>
+      <h1>Past Contests</h1>
       <div className="flex flex-wrap">
         {past_contests.map((contest) => (
           <ContestCard contest={contest} key={contest.id} />
@@ -55,7 +56,9 @@ const ContestCard = async ({ contest }: { contest: Contest }) => {
       style={{ maxWidth: "800px" }}
     >
       <div className="card-body card-bordered">
-        <p className="card-title text-3xl">{contest.title}</p>
+        <h2 className="card-title text-3xl link link-primary">
+          <Link href={`/contests/${contest.id}`}>{contest.title}</Link>
+        </h2>
         <div className="md:grid md:grid-cols-2">
           <div className="flex flex-col">
             <p className="font-bold">Writers</p>

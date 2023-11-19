@@ -4,9 +4,15 @@ import authOptions from "@/auth/authOptions";
 import prisma from "@/prisma/client";
 import { getServerSession } from "next-auth";
 import { contestSchema } from "./schema";
+import { notFound, redirect } from "next/navigation";
+import { permissionOwnerStaff } from "@/components/helpers";
 
-const onSubmit = async (dataStr: string) => {
+const createOrUpdateContest = async (dataStr: string, contestId?: string) => {
   const session = await getServerSession(authOptions);
+
+  if (!session || !session.user) {
+    redirect("/api/auth/signin?callbackUrl=/contests/new");
+  }
   const user = await prisma.user.findUnique({
     where: {
       email: session!.user!.email!,
@@ -19,14 +25,33 @@ const onSubmit = async (dataStr: string) => {
     throw new Error("Invalid data");
   }
   const data = validation.data;
-
-  await prisma.contest.create({
-    data: {
-      ...data,
-      userId: user!.id,
-    },
-  });
+  if (contestId) {
+    const contest = await prisma.contest.findUnique({
+      where: {
+        id: contestId,
+      },
+    });
+    if (!contest) {
+      notFound();
+    }
+    if (permissionOwnerStaff(user, contest)) {
+      redirect("/denied");
+    }
+    await prisma.contest.update({
+      where: {
+        id: contestId,
+      },
+      data,
+    });
+  } else {
+    await prisma.contest.create({
+      data: {
+        ...data,
+        userId: user!.id,
+      },
+    });
+  }
   return { ok: true };
 };
 
-export { onSubmit };
+export { createOrUpdateContest };
