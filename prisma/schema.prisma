@@ -126,14 +126,16 @@ model ContestWriter {
 }
 
 model ContestProblem {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  contestId   String   @db.ObjectId
-  createdAt   DateTime
-  problemChar String
-  problemId   String   @db.ObjectId
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  contestId    String   @db.ObjectId
+  createdAt    DateTime @default(now())
+  problemIndex String
+  problemId    String   @db.ObjectId
 
   contest Contest @relation(fields: [contestId], references: [id])
   problem Problem @relation(fields: [problemId], references: [id])
+
+  @@unique([contestId, problemId])
 }
 
 enum Verdict {

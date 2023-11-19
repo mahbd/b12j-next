@@ -1,6 +1,7 @@
 import prisma from "@/prisma/client";
 import { notFound } from "next/navigation";
 import ContestForm from "../../new/ContestForm";
+import Link from "next/link";
 
 interface Props {
   params: { id: string };
@@ -14,7 +15,14 @@ const EditContest = async ({ params: { id } }: Props) => {
     notFound();
   }
 
-  return <ContestForm contest={contest} />;
+  return (
+    <div>
+      <Link className="link link-primary" href={`/contests/${id}/problems`}>
+        Add or Remove Contest Problems
+      </Link>
+      <ContestForm contest={contest} />
+    </div>
+  );
 };
 
 export default EditContest;
