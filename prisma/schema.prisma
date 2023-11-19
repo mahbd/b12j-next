@@ -13,6 +13,7 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  role          Role      @default(USER)
 
   accounts       Account[]
   comments       Comment[]
@@ -215,12 +216,6 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-enum Language {
-  JAVASCRIPT
-  C_CPP
-  PYTHON3
-}
-
 model Checker {
   id       String   @id @default(auto()) @map("_id") @db.ObjectId
   language Language
@@ -228,4 +223,16 @@ model Checker {
   source   String
 
   problems Problem[]
+}
+
+enum Language {
+  JAVASCRIPT
+  C_CPP
+  PYTHON3
+}
+
+enum Role {
+  ADMIN
+  STAFF
+  USER
 }
