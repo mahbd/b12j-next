@@ -2,11 +2,24 @@ import prisma from "@/prisma/client";
 import React from "react";
 import { readableDateTime } from "../../components/helpers";
 import Link from "next/link";
+import Pagination from "@/components/Pagination";
 
-const Submission = async () => {
+interface Props {
+  searchParams?: {
+    offset: string;
+    limit: string;
+  };
+}
+
+const Submission = async ({ searchParams }: Props) => {
+  const itemCount = await prisma.submission.count({
+    orderBy: { createdAt: "desc" },
+  });
   const submissions = await prisma.submission.findMany({
     orderBy: { createdAt: "desc" },
     include: { user: true, problem: true },
+    take: searchParams?.limit ? parseInt(searchParams.limit) : 10,
+    skip: searchParams?.offset ? parseInt(searchParams.offset) : 0,
   });
   return (
     <div>
@@ -42,6 +55,11 @@ const Submission = async () => {
           ))}
         </tbody>
       </table>
+      <Pagination
+        itemCount={itemCount}
+        limit={searchParams?.limit ? parseInt(searchParams.limit) : 10}
+        offset={searchParams?.offset ? parseInt(searchParams.offset) : 0}
+      />
     </div>
   );
 };

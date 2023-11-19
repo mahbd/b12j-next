@@ -4,10 +4,11 @@ import { CodeEditor, ErrorMessage, Spinner } from "@/components";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import z from "zod";
-import { onSolutionSubmission } from "./actions";
 import { submissionSchema } from "./submissionSchema";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Language } from "@prisma/client";
+
+const decoder = new TextDecoder();
 
 export type SubmissionFormData = z.infer<typeof submissionSchema>;
 
@@ -21,29 +22,40 @@ const SubmissionForm = ({ problemId, contestId }: Props) => {
     register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm<SubmissionFormData>({
     resolver: zodResolver(submissionSchema),
   });
 
+  useEffect(() => {
+    setValue("problemId", problemId);
+    setValue("contestId", contestId);
+  }, [problemId, contestId]);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [verdict, setVerdict] = useState("");
 
   return (
     <form
       onSubmit={handleSubmit(async (data: SubmissionFormData) => {
         setIsSubmitting(true);
-        const res = await onSolutionSubmission(
-          JSON.stringify(data),
-          problemId,
-          contestId
-        );
-        setIsSubmitting(false);
-        if (res.ok) {
-          alert("Submitted successfully");
-          window.location.href = "/submissions";
-        } else {
-          alert("Failed to submit");
+        const reader = (
+          await fetch("/api/submissions", {
+            method: "POST",
+            body: JSON.stringify(data),
+          })
+        ).body?.getReader();
+        while (true) {
+          const { done, value } = await reader!.read();
+          if (done) {
+            window.location.href = `/submissions`;
+            break;
+          }
+          const text = decoder.decode(value);
+          setVerdict(text);
         }
+        setIsSubmitting(false);
       })}
     >
       <div className="form-control">
@@ -74,9 +86,20 @@ const SubmissionForm = ({ problemId, contestId }: Props) => {
         />
         <ErrorMessage>{errors.code?.message}</ErrorMessage>
       </div>
+      {verdict && (
+        <div className="form-control">
+          <label htmlFor="verdict">Verdict</label>
+          <input
+            type="text"
+            className="input input-bordered"
+            value={verdict}
+            readOnly
+          />
+        </div>
+      )}
       <button
         type="submit"
-        className="btn btn-primary btn-sm border-2"
+        className="btn btn-primary btn-sm border-2 mb-32"
         disabled={isSubmitting}
       >
         {isSubmitting && <Spinner />} Submit

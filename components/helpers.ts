@@ -1,4 +1,4 @@
-import { Language } from "@prisma/client";
+import { Language, Verdict } from "@prisma/client";
 
 export const readableDateTime = (dateString: string) => {
   const date = new Date(dateString);
@@ -40,4 +40,22 @@ export const LANGUAGE_MAP = {
   [Language.C_CPP]: 54,
   [Language.JAVASCRIPT]: 63,
   [Language.PYTHON3]: 71,
+};
+
+export const JUDGE0ERROR_MAP = {
+  1: Verdict.PENDING,
+  2: Verdict.QUEUED,
+  3: Verdict.ACCEPTED,
+  4: Verdict.WRONG_ANSWER,
+  5: Verdict.TIME_LIMIT_EXCEEDED,
+  6: Verdict.COMPILATION_ERROR,
+  7: Verdict.RUNTIME_ERROR,
+  8: Verdict.RUNTIME_ERROR,
+  9: Verdict.RUNTIME_ERROR,
+  10: Verdict.RUNTIME_ERROR,
+  11: Verdict.RUNTIME_ERROR,
+  12: Verdict.RUNTIME_ERROR,
+  13: Verdict.RUNTIME_ERROR,
+  14: Verdict.RUNTIME_ERROR,
+  15: Verdict.RUNTIME_ERROR,
 };
