@@ -1,6 +1,6 @@
 "use client";
 
-import { ErrorMessage, Spinner, TextEditor } from "@/components";
+import { ErrorMessage, Spinner, TextEditor } from "@/app/components";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
@@ -8,7 +8,6 @@ import { contestSchema } from "./schema";
 import { createOrUpdateContest } from "./actions";
 import { Contest } from "@prisma/client";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 
 export type ContestFormData = z.infer<typeof contestSchema>;
 
@@ -21,18 +20,15 @@ const ContestForm = ({ contest }: { contest?: Contest }) => {
     formState: { errors },
   } = useForm<ContestFormData>({
     resolver: zodResolver(contestSchema),
+    defaultValues: {
+      title: contest?.title || "",
+      description: contest?.description || "",
+      // @ts-ignore
+      startTime: formatDateToISOString(contest?.startTime || new Date()),
+      // @ts-ignore
+      endTime: formatDateToISOString(contest?.endTime || new Date()),
+    },
   });
-
-  useEffect(() => {
-    if (contest) {
-      setValue("title", contest.title);
-      setValue("description", contest.description || "");
-      // @ts-ignore
-      setValue("startTime", formatDateToISOString(contest.startTime));
-      // @ts-ignore
-      setValue("endTime", formatDateToISOString(contest.endTime));
-    }
-  }, [contest]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 

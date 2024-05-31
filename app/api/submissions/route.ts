@@ -1,6 +1,6 @@
 import { submissionSchema } from "@/app/problems/[id]/submissionSchema";
 import authOptions from "@/auth/authOptions";
-import { LANGUAGE_MAP } from "@/components";
+import { LANGUAGE_MAP } from "@/app/components";
 import prisma from "@/prisma/client";
 import { Language, Problem, TestCase, Verdict } from "@prisma/client";
 import { getServerSession } from "next-auth";

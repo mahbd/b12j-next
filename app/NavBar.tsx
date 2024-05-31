@@ -1,10 +1,11 @@
 "use client";
 
-import { Skeleton } from "@/components";
+import { Skeleton } from "@/app/components";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
 import { IoMdMenu, IoMdClose } from "react-icons/io";
+import Image from "next/image";
 
 export const navLinks = [
   {
@@ -111,7 +112,12 @@ const AuthStatus = () => {
       <summary>
         <div className="avatar">
           <div className="h-8">
-            <img src={session!.user!.image!} />
+            <Image
+              height="20"
+              width="20"
+              alt="This is profile pic"
+              src={session!.user!.image!}
+            />
           </div>
         </div>
       </summary>

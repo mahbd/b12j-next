@@ -1,7 +1,7 @@
 import prisma from "@/prisma/client";
 import { Contest } from "@prisma/client";
 import React from "react";
-import { readableDateTime } from "../../components/helpers";
+import { readableDateTime } from "@/app/components/helpers";
 import Link from "next/link";
 
 const ContestsPage = async () => {

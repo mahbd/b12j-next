@@ -5,8 +5,7 @@ import { testCaseSchema } from "./new/testCaseSchema";
 import { getServerSession } from "next-auth";
 import authOptions from "@/auth/authOptions";
 import { notFound } from "next/navigation";
-import { Language } from "@prisma/client";
-import { LANGUAGE_MAP } from "@/components";
+import { LANGUAGE_MAP } from "@/app/components";
 
 export const createNewTestCase = async (dataStr: string, problemId: string) => {
   const session = await getServerSession(authOptions);

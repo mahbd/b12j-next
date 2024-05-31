@@ -5,8 +5,12 @@ import { ProblemFormData, problemSchema } from "./schema";
 import { onSubmit } from "./actions";
 import { Checker, Language } from "@prisma/client";
 import { Controller, useForm } from "react-hook-form";
-import { CodeEditor, ErrorMessage, Spinner, TextEditor } from "@/components";
-import { redirect } from "next/navigation";
+import {
+  CodeEditor,
+  ErrorMessage,
+  Spinner,
+  TextEditor,
+} from "@/app/components";
 import { useState } from "react";
 
 interface Props {

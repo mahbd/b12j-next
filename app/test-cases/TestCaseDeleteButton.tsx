@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { deleteTestCase } from "./actions";
-import { Spinner } from "@/components";
+import { Spinner } from "@/app/components";
 
 interface Props {
   testCaseId: string;

@@ -1,5 +1,5 @@
 import authOptions from "@/auth/authOptions";
-import { readableDateTime } from "@/components/helpers";
+import { readableDateTime } from "@/app/components/helpers";
 import prisma from "@/prisma/client";
 import { Role } from "@prisma/client";
 import { getServerSession } from "next-auth";

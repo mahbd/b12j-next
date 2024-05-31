@@ -1,6 +1,6 @@
 "use client";
 
-import { ErrorMessage, Spinner } from "@/components";
+import { ErrorMessage, Spinner } from "@/app/components";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -18,9 +18,6 @@ type CheckerFormData = z.infer<typeof testCaseSchema>;
 
 const Checker = ({ searchParams }: Props) => {
   const problemId = searchParams?.problemId;
-  if (!problemId) {
-    return <div>Problem ID not set</div>;
-  }
 
   const {
     register,
@@ -31,9 +28,12 @@ const Checker = ({ searchParams }: Props) => {
   } = useForm<CheckerFormData>({
     resolver: zodResolver(testCaseSchema),
   });
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+
+  if (!problemId) {
+    return <div>Problem ID not set</div>;
+  }
 
   return (
     <div className="w-full mx-2 lg:mx-32">

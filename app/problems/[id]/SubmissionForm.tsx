@@ -1,6 +1,6 @@
 "use client";
 
-import { CodeEditor, ErrorMessage, Spinner } from "@/components";
+import { CodeEditor, ErrorMessage, Spinner } from "@/app/components";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import z from "zod";
@@ -22,16 +22,15 @@ const SubmissionForm = ({ problemId, contestId }: Props) => {
     register,
     handleSubmit,
     control,
-    setValue,
     formState: { errors },
   } = useForm<SubmissionFormData>({
     resolver: zodResolver(submissionSchema),
+    defaultValues: {
+      problemId: problemId,
+      contestId: contestId,
+      language: Language.C_CPP,
+    },
   });
-
-  useEffect(() => {
-    setValue("problemId", problemId);
-    setValue("contestId", contestId);
-  }, [problemId, contestId]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [verdict, setVerdict] = useState("");

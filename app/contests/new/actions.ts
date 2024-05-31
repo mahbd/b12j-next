@@ -5,7 +5,7 @@ import prisma from "@/prisma/client";
 import { getServerSession } from "next-auth";
 import { contestSchema } from "./schema";
 import { notFound, redirect } from "next/navigation";
-import { permissionOwnerStaff } from "@/components/helpers";
+import { permissionOwnerStaff } from "@/app/components/helpers";
 import { ContestProblem } from "@prisma/client";
 
 export const createOrUpdateContest = async (

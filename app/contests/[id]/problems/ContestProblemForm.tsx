@@ -3,7 +3,7 @@
 import { Problem } from "@prisma/client";
 import { useState } from "react";
 import { addProblemToContest } from "../../new/actions";
-import { Spinner } from "@/components";
+import { Spinner } from "@/app/components";
 
 interface Props {
   problems: Problem[];

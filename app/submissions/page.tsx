@@ -1,8 +1,8 @@
 import prisma from "@/prisma/client";
 import React from "react";
-import { readableDateTime } from "../../components/helpers";
+import { readableDateTime } from "@/app/components/helpers";
 import Link from "next/link";
-import Pagination from "@/components/Pagination";
+import Pagination from "@/app/components/Pagination";
 
 interface Props {
   searchParams?: {
