@@ -2,13 +2,12 @@
 
 import prisma from "@/prisma/client";
 import { testCaseSchema } from "./new/testCaseSchema";
-import { getServerSession } from "next-auth";
-import authOptions from "@/auth/authOptions";
 import { notFound } from "next/navigation";
 import { LANGUAGE_MAP } from "@/app/components";
+import { auth } from "@/auth";
 
 export const createNewTestCase = async (dataStr: string, problemId: string) => {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   const user = await prisma.user.findUnique({
     where: {
       email: session!.user!.email!,

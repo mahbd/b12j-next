@@ -1,18 +1,17 @@
 "use server";
 
-import authOptions from "@/auth/authOptions";
 import prisma from "@/prisma/client";
-import { getServerSession } from "next-auth";
 import { contestSchema } from "./schema";
 import { notFound, redirect } from "next/navigation";
 import { permissionOwnerStaff } from "@/app/components/helpers";
 import { ContestProblem } from "@prisma/client";
+import { auth } from "@/auth";
 
 export const createOrUpdateContest = async (
   dataStr: string,
   contestId?: string
 ) => {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
   if (!session || !session.user) {
     redirect("/api/auth/signin?callbackUrl=/contests/new");
@@ -63,7 +62,7 @@ export const addProblemToContest = async (
   problemId: string,
   problemIndex: string
 ) => {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
   if (!session || !session.user) {
     redirect(`/api/auth/signin?callbackUrl=/contests/${contestId}/problems`);
@@ -111,7 +110,7 @@ export const addProblemToContest = async (
 export const removeProblemFromContest = async (
   contestProblem: ContestProblem
 ) => {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
 
   if (!session || !session.user) {
     redirect(

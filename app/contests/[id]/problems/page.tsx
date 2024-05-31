@@ -1,17 +1,16 @@
-import authOptions from "@/auth/authOptions";
 import prisma from "@/prisma/client";
-import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 import ContestProblemForm from "./ContestProblemForm";
 import Link from "next/link";
 import DeleteContestProblemButton from "./DeleteContestProblemButton";
+import { auth } from "@/auth";
 
 interface Props {
   params: { id: string };
 }
 
 const ContestProblems = async ({ params: { id } }: Props) => {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session || !session.user) {
     window.location.href = "/api/auth/signin";
     return;

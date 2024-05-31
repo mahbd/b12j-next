@@ -1,8 +1,7 @@
-import authOptions from "@/auth/authOptions";
 import { readableDateTime } from "@/app/components/helpers";
+import { auth } from "@/auth";
 import prisma from "@/prisma/client";
 import { Role } from "@prisma/client";
-import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -11,7 +10,7 @@ interface Props {
 }
 
 const Contest = async ({ params: { id } }: Props) => {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   const contest = await prisma.contest.findUnique({
     where: { id: id },
     include: {

@@ -1,16 +1,15 @@
 import { submissionSchema } from "@/app/problems/[id]/submissionSchema";
-import authOptions from "@/auth/authOptions";
 import { LANGUAGE_MAP } from "@/app/components";
 import prisma from "@/prisma/client";
 import { Language, Problem, TestCase, Verdict } from "@prisma/client";
-import { getServerSession } from "next-auth";
+import { auth } from "@/auth";
 
 const encoder = new TextEncoder();
 
 export const POST = async (req: Request) => {
   const body = await req.json();
 
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   const user = await prisma.user.findUnique({
     where: {
       email: session!.user!.email!,

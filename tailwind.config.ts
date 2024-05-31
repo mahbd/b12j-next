@@ -6,20 +6,6 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  theme: {
-    extend: {
-      typography: {
-        DEFAULT: {
-          css: {
-            maxWidth: "100%", // add required value here
-          },
-        },
-      },
-    },
-  },
-  plugins: [require("daisyui"), require("@tailwindcss/typography")],
-  daisyui: {
-    themes: ["light", "dark", "winter"],
-  },
+  plugins: [require("daisyui")],
 };
 export default config;

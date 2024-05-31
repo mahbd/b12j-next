@@ -1,13 +1,12 @@
 "use server";
 
-import authOptions from "@/auth/authOptions";
 import prisma from "@/prisma/client";
 import { Language } from "@prisma/client";
-import { getServerSession } from "next-auth";
 import { problemSchema } from "./schema";
+import { auth } from "@/auth";
 
 const onSubmit = async (dataStr: string) => {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   const user = await prisma.user.findUnique({
     where: {
       email: session!.user!.email!,
