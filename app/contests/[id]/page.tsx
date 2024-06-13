@@ -1,4 +1,4 @@
-import { readableDateTime } from "@/app/components/helpers";
+import { readableDateTime } from "@/components/helpers";
 import { auth } from "@/auth";
 import prisma from "@/prisma/client";
 import Link from "next/link";

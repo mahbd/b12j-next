@@ -1,6 +1,6 @@
 "use client";
 
-import { Skeleton } from "@/app/components";
+import { Skeleton } from "@/components";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";

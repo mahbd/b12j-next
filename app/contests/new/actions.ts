@@ -3,7 +3,7 @@
 import prisma from "@/prisma/client";
 import { contestSchema } from "./schema";
 import { notFound, redirect } from "next/navigation";
-import { permissionOwnerStaff } from "@/app/components/helpers";
+import { permissionOwnerStaff } from "@/components/helpers";
 import { ContestProblem } from "@prisma/client";
 import { auth } from "@/auth";
 

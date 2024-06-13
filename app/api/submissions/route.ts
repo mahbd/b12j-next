@@ -1,5 +1,5 @@
 import { submissionSchema } from "@/app/problems/[id]/submissionSchema";
-import { LANGUAGE_MAP } from "@/app/components";
+import { LANGUAGE_MAP } from "@/components";
 import prisma from "@/prisma/client";
 import { Language, Problem, TestCase, Verdict } from "@prisma/client";
 import { auth } from "@/auth";

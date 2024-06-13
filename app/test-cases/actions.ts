@@ -3,7 +3,7 @@
 import prisma from "@/prisma/client";
 import { testCaseSchema } from "./new/testCaseSchema";
 import { notFound } from "next/navigation";
-import { LANGUAGE_MAP } from "@/app/components";
+import { LANGUAGE_MAP } from "@/components";
 import { auth } from "@/auth";
 
 export const createNewTestCase = async (dataStr: string, problemId: string) => {

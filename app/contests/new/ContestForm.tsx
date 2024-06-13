@@ -1,6 +1,6 @@
 "use client";
 
-import { ErrorMessage, Spinner, TextEditor } from "@/app/components";
+import { ErrorMessage, Spinner, TextEditor } from "@/components";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";

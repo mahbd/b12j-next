@@ -5,12 +5,7 @@ import { ProblemFormData, problemSchema } from "./problemSchema";
 import { onSubmit } from "./actions";
 import { Language } from "@prisma/client";
 import { Controller, useForm } from "react-hook-form";
-import {
-  CodeEditor,
-  ErrorMessage,
-  Spinner,
-  TextEditor,
-} from "@/app/components";
+import { CodeEditor, ErrorMessage, Spinner, TextEditor } from "@/components";
 import { useState } from "react";
 
 const ProblemForm = () => {

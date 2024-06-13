@@ -3,7 +3,7 @@
 import { ContestProblem } from "@prisma/client";
 import { useState } from "react";
 import { removeProblemFromContest } from "../../new/actions";
-import { Spinner } from "@/app/components";
+import { Spinner } from "@/components";
 
 const DeleteContestProblemButton = ({
   contestProblem,
