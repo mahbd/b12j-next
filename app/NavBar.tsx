@@ -100,7 +100,7 @@ export default Navbar;
 const AuthStatus = () => {
   const { status, data: session } = useSession();
 
-  if (status === "loading") return <Skeleton width={"3rem"} height={"32px"} />;
+  if (status === "loading") return <Skeleton width={"3rem"} height={"20px"} />;
   if (status === "unauthenticated")
     return (
       <Link href={"/api/auth/signin"} className="nav-link">
@@ -108,29 +108,34 @@ const AuthStatus = () => {
       </Link>
     );
   return (
-    <details className="dropdown dropdown-left bg-none">
-      <summary>
-        <div className="avatar">
-          <div className="h-8">
-            <Image
-              height="20"
-              width="20"
-              alt="This is profile pic"
-              src={session!.user!.image!}
-            />
-          </div>
-        </div>
-      </summary>
-      <ul className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52">
-        <li>
-          <p>{session!.user!.email}</p>
-        </li>
-        <li>
-          <Link href={"/api/auth/signout"} className="nav-link">
-            Logout
-          </Link>
-        </li>
-      </ul>
-    </details>
+    <Link href={"/api/auth/signout"} className="nav-link">
+      Logout
+    </Link>
   );
+  // return (
+  //   <details className="dropdown dropdown-left bg-none">
+  //     <summary>
+  //       <div className="avatar">
+  //         <div className="h-8">
+  //           <Image
+  //             height="20"
+  //             width="20"
+  //             alt="This is profile pic"
+  //             src={session!.user!.image!}
+  //           />
+  //         </div>
+  //       </div>
+  //     </summary>
+  //     <ul className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52">
+  //       <li>
+  //         <p>{session!.user!.email}</p>
+  //       </li>
+  //       <li>
+  //         <Link href={"/api/auth/signout"} className="nav-link">
+  //           Logout
+  //         </Link>
+  //       </li>
+  //     </ul>
+  //   </details>
+  // );
 };

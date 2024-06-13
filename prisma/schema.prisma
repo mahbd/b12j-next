@@ -15,17 +15,14 @@ model User {
   image         String?
   role          Role      @default(USER)
 
-  accounts       Account[]
-  comments       Comment[]
-  contests       Contest[]
-  contestTesters ContestTester[]
-  contestWriters ContestWriter[]
-  problems       Problem[]
-  submissions    Submission[]
-  testCases      TestCase[]
-  tutorials      Tutorial[]
-  Session        Session[]
-  Authenticator  Authenticator[]
+  accounts      Account[]
+  contests      Contest[]
+  problems      Problem[]
+  submissions   Submission[]
+  testCases     TestCase[]
+  tutorials     Tutorial[]
+  Session       Session[]
+  Authenticator Authenticator[]
 }
 
 model Contest {
@@ -40,35 +37,25 @@ model Contest {
   user User @relation(fields: [userId], references: [id])
 
   contestProblems ContestProblem[]
-  contestTesters  ContestTester[]
-  contestWriters  ContestWriter[]
   submissions     Submission[]
   tutorials       Tutorial[]
 }
 
 model Problem {
-  id              String    @id @default(auto()) @map("_id") @db.ObjectId
-  checkerId       String    @db.ObjectId
-  correctCode     String
-  correctLanguage Language
-  createdAt       DateTime  @default(now())
-  description     String
-  difficulty      Int       @default(500)
-  exampleQuantity Int       @default(1)
-  hiddenTill      DateTime?
-  inputTerms      String
-  memoryLimit     Int       @default(262144)
-  notice          String?
-  outputTerms     String
-  solveCount      Int       @default(0)
-  timeLimit       Int       @default(1)
-  title           String    @unique
-  userId          String    @db.ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  correctCode String?
+  createdAt   DateTime @default(now())
+  description String
+  isHidden    Boolean  @default(true)
+  input       String
+  memoryLimit Int      @default(262144)
+  output      String
+  timeLimit   Int      @default(1)
+  title       String   @unique
+  userId      String   @db.ObjectId
 
-  checker Checker @relation(fields: [checkerId], references: [id])
-  user    User    @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 
-  comments        Comment[]
   contestProblems ContestProblem[]
   submissions     Submission[]
   testCases       TestCase[]
@@ -88,42 +75,6 @@ model Tutorial {
   contest Contest? @relation(fields: [contestId], references: [id])
   problem Problem? @relation(fields: [problemId], references: [id])
   user    User     @relation(fields: [userId], references: [id])
-
-  comments Comment[]
-}
-
-model Comment {
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  parentId String?  @db.ObjectId
-  parent   Comment? @relation("CommentChildren", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  problemId  String? @db.ObjectId
-  tutorialId String? @db.ObjectId
-  userId     String  @db.ObjectId
-
-  problem  Problem?  @relation(fields: [problemId], references: [id])
-  tutorial Tutorial? @relation(fields: [tutorialId], references: [id])
-  user     User      @relation(fields: [userId], references: [id])
-
-  children Comment[] @relation("CommentChildren")
-}
-
-model ContestTester {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  contestId String @db.ObjectId
-  userId    String @db.ObjectId
-
-  contest Contest @relation(fields: [contestId], references: [id])
-  user    User    @relation(fields: [userId], references: [id])
-}
-
-model ContestWriter {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  contestId String @db.ObjectId
-  userId    String @db.ObjectId
-
-  contest Contest @relation(fields: [contestId], references: [id])
-  user    User    @relation(fields: [userId], references: [id])
 }
 
 model ContestProblem {
@@ -146,12 +97,6 @@ enum Verdict {
   RUNTIME_ERROR
   COMPILATION_ERROR
   MEMORY_LIMIT_EXCEEDED
-  SKIPPED
-  IDLENESS_LIMIT_EXCEEDED
-  TESTING
-  PRETEST_PASSED
-  PRETEST_FAILED
-  QUEUED
   PENDING
 }
 
@@ -174,8 +119,9 @@ model Submission {
 model TestCase {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   createdAt DateTime @default(now())
-  inputs    String
-  outputs   String
+  input     String
+  isSample  Boolean  @default(false)
+  output    String
   problemId String   @db.ObjectId
   userId    String   @db.ObjectId
 
@@ -238,15 +184,6 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, credentialID])
-}
-
-model Checker {
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  language Language
-  name     String
-  source   String
-
-  problems Problem[]
 }
 
 enum Language {

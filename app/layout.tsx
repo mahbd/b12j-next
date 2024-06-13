@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import NavBar from "./NavBar";
-import Sidebar from "@/app/components/Sidebar";
 import AuthProvider from "./Provider";
 
 export const metadata: Metadata = {
@@ -20,9 +19,9 @@ export default function RootLayout({
         <AuthProvider>
           <NavBar />
           <div className="md:flex md:gap-4">
-            <div className="hidden md:block">
+            {/* <div className="hidden md:block">
               <Sidebar />
-            </div>
+            </div> */}
             {children}
           </div>
         </AuthProvider>

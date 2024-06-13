@@ -1,7 +1,6 @@
 import { readableDateTime } from "@/app/components/helpers";
 import { auth } from "@/auth";
 import prisma from "@/prisma/client";
-import { Role } from "@prisma/client";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -15,30 +14,17 @@ const Contest = async ({ params: { id } }: Props) => {
     where: { id: id },
     include: {
       contestProblems: { include: { problem: true } },
-      contestWriters: { include: { user: true } },
-      contestTesters: { include: { user: true } },
     },
   });
   if (!contest) {
     notFound();
   }
 
-  const isWriter =
-    (session &&
-      session.user &&
-      contest.contestWriters.some(
-        (contestWriter) => contestWriter.user.email === session.user!.email
-      )) ||
-    // @ts-ignore
-    (session && session.user && session.user.role === Role.ADMIN);
-
   return (
     <div className="w-full">
-      {isWriter && (
-        <Link className="btn btn-sm btn-primary" href={`/contests/${id}/edit`}>
-          Edit
-        </Link>
-      )}
+      <Link className="btn btn-sm btn-primary" href={`/contests/${id}/edit`}>
+        Edit
+      </Link>
       <h1>{contest.title}</h1>
       <h2>Description</h2>
       <div
@@ -46,18 +32,6 @@ const Contest = async ({ params: { id } }: Props) => {
           __html: contest.description || "<h2>No description</h2>",
         }}
       />
-      <h2>Writers</h2>
-      <ul>
-        {contest.contestWriters.map((contestWriter) => (
-          <li key={contestWriter.id}>{contestWriter.user.email}</li>
-        ))}
-      </ul>
-      <h2>Testers</h2>
-      <ul>
-        {contest.contestTesters.map((contestTester) => (
-          <li key={contestTester.id}>{contestTester.user.email}</li>
-        ))}
-      </ul>
       <h2>Start Time</h2>
       <p>{readableDateTime(contest.startTime.toISOString())}</p>
       <h2>End Time</h2>

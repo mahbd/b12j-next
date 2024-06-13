@@ -54,12 +54,8 @@ const Checker = ({ searchParams }: Props) => {
         <div className="flex flex-col items-center">
           <div className="flex flex-col w-full">
             <label htmlFor="inputs">Inputs</label>
-            <textarea
-              id="inputs"
-              className="border-2"
-              {...register("inputs")}
-            />
-            <ErrorMessage>{errors.inputs?.message}</ErrorMessage>
+            <textarea id="inputs" className="border-2" {...register("input")} />
+            <ErrorMessage>{errors.input?.message}</ErrorMessage>
           </div>
           <div className="flex flex-col w-full">
             <label htmlFor="outputs">Outputs</label>
@@ -67,9 +63,9 @@ const Checker = ({ searchParams }: Props) => {
               id="outputs"
               readOnly
               className="border-2"
-              {...register("outputs")}
+              {...register("output")}
             />
-            <ErrorMessage>{errors.outputs?.message}</ErrorMessage>
+            <ErrorMessage>{errors.output?.message}</ErrorMessage>
           </div>
           <div className="flex flex-row w-full justify-between">
             <button
@@ -78,12 +74,9 @@ const Checker = ({ searchParams }: Props) => {
               disabled={isGenerating || isSubmitting}
               onClick={async () => {
                 setIsGenerating(true);
-                const res = await generateOutput(
-                  getValues("inputs"),
-                  problemId
-                );
+                const res = await generateOutput(getValues("input"), problemId);
                 setIsGenerating(false);
-                setValue("outputs", res);
+                setValue("output", res);
               }}
             >
               {isGenerating && <Spinner />} Generate Output

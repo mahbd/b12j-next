@@ -1,9 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ProblemFormData, problemSchema } from "./schema";
+import { ProblemFormData, problemSchema } from "./problemSchema";
 import { onSubmit } from "./actions";
-import { Checker, Language } from "@prisma/client";
+import { Language } from "@prisma/client";
 import { Controller, useForm } from "react-hook-form";
 import {
   CodeEditor,
@@ -13,11 +13,7 @@ import {
 } from "@/app/components";
 import { useState } from "react";
 
-interface Props {
-  checkers: Checker[] | undefined;
-}
-
-const ProblemForm = ({ checkers }: Props) => {
+const ProblemForm = () => {
   const {
     register,
     control,
@@ -54,19 +50,6 @@ const ProblemForm = ({ checkers }: Props) => {
         />
         <ErrorMessage>{errors.title?.message}</ErrorMessage>
       </div>
-      <div className="form-control">
-        <label htmlFor="checkerId">Select Checker</label>
-        <select
-          className="select select-bordered select-sm"
-          {...register("checkerId")}
-        >
-          {checkers?.map((checker) => (
-            <option value={checker.id} key={checker.id}>
-              {checker.name}
-            </option>
-          ))}
-        </select>
-      </div>
       <div className="w-full">
         <label htmlFor="correctCode">Correct Code</label>
         <Controller
@@ -83,17 +66,6 @@ const ProblemForm = ({ checkers }: Props) => {
           }}
         />
         <ErrorMessage>{errors.correctCode?.message}</ErrorMessage>
-      </div>
-      <div className=" w-full">
-        <label htmlFor="checkerId">Correct Language</label>
-        <select
-          className="select select-bordered select-sm w-full"
-          {...register("correctLanguage")}
-        >
-          <option value={Language.C_CPP}>C/C++</option>
-          <option value={Language.PYTHON3}>Python 3</option>
-        </select>
-        <ErrorMessage>{errors.correctLanguage?.message}</ErrorMessage>
       </div>
       <div className="form-control">
         <label htmlFor="description">Description</label>
@@ -115,7 +87,7 @@ const ProblemForm = ({ checkers }: Props) => {
       <div className="prose  w-full">
         <label htmlFor="description">Input</label>
         <Controller
-          name="inputTerms"
+          name="input"
           control={control}
           render={({ field }) => {
             return (
@@ -127,12 +99,12 @@ const ProblemForm = ({ checkers }: Props) => {
             );
           }}
         />
-        <ErrorMessage>{errors.inputTerms?.message}</ErrorMessage>
+        <ErrorMessage>{errors.input?.message}</ErrorMessage>
       </div>
       <div className="prose  w-full">
         <label htmlFor="description">Output</label>
         <Controller
-          name="outputTerms"
+          name="output"
           control={control}
           render={({ field }) => {
             return (
@@ -144,7 +116,7 @@ const ProblemForm = ({ checkers }: Props) => {
             );
           }}
         />
-        <ErrorMessage>{errors.outputTerms?.message}</ErrorMessage>
+        <ErrorMessage>{errors.output?.message}</ErrorMessage>
       </div>
 
       <button

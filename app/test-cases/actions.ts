@@ -40,7 +40,6 @@ export const generateOutput = async (inputs: string, problemId: string) => {
   if (!problem) {
     notFound();
   }
-  const languageCode = LANGUAGE_MAP[problem.correctLanguage];
   const sourceCode = problem.correctCode;
   const timeLimit = problem.timeLimit;
   const memoryLimit = problem.memoryLimit;
@@ -55,7 +54,7 @@ export const generateOutput = async (inputs: string, problemId: string) => {
       "X-Auth-User": JUDGE0_KEY!,
     },
     body: JSON.stringify({
-      language_id: languageCode,
+      language_id: 10, // TODO: Add language selection
       source_code: sourceCode,
       stdin: stdin,
       cpu_time_limit: timeLimit,

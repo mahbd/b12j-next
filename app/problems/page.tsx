@@ -26,9 +26,6 @@ const ProblemsPage = async ({ searchParams }: Props) => {
         <thead>
           <tr>
             <th>Problem</th>
-            <th>Status</th>
-            <th>Difficulty</th>
-            <th>Solve Count</th>
           </tr>
         </thead>
         <tbody>
@@ -42,9 +39,6 @@ const ProblemsPage = async ({ searchParams }: Props) => {
                   {problem.title}
                 </Link>
               </td>
-              <td>Solved</td>
-              <td>{problem.difficulty}</td>
-              <td>{problem.solveCount}</td>
             </tr>
           ))}
         </tbody>

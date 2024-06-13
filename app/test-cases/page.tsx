@@ -1,7 +1,6 @@
 import prisma from "@/prisma/client";
 import Link from "next/link";
 import React from "react";
-import { deleteTestCase } from "./actions";
 import TestCaseDeleteButton from "./TestCaseDeleteButton";
 
 const TestCases = async () => {
@@ -33,10 +32,10 @@ const TestCases = async () => {
                 </Link>
               </td>
               <td>
-                <pre>{testCase.inputs}</pre>
+                <pre>{testCase.input}</pre>
               </td>
               <td>
-                <pre>{testCase.outputs}</pre>
+                <pre>{testCase.output}</pre>
               </td>
               <td>
                 <TestCaseDeleteButton testCaseId={testCase.id} />

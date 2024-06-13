@@ -2,7 +2,7 @@
 
 import prisma from "@/prisma/client";
 import { Language } from "@prisma/client";
-import { problemSchema } from "./schema";
+import { problemSchema } from "./problemSchema";
 import { auth } from "@/auth";
 
 const onSubmit = async (dataStr: string) => {
@@ -23,7 +23,6 @@ const onSubmit = async (dataStr: string) => {
   await prisma.problem.create({
     data: {
       ...data,
-      correctLanguage: data.correctLanguage as Language,
       userId: user!.id,
     },
   });

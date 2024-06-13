@@ -44,7 +44,7 @@ export const LANGUAGE_MAP = {
 
 export const JUDGE0ERROR_MAP = {
   1: Verdict.PENDING,
-  2: Verdict.QUEUED,
+  2: Verdict.PENDING,
   3: Verdict.ACCEPTED,
   4: Verdict.WRONG_ANSWER,
   5: Verdict.TIME_LIMIT_EXCEEDED,

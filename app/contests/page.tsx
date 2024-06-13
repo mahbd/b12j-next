@@ -20,14 +20,15 @@ const ContestsPage = async () => {
     },
   });
   return (
-    <div className="w-full">
-      <h1>Current or Upcoming Contests</h1>
+    <div className="w-full m-2">
+      <button className="btn btn-sm btn-primary">New Contest</button>
+      <p className="font-bold">Current or Upcoming Contests</p>
       <div className="flex flex-wrap">
         {upcoming_contests.map((contest) => (
           <ContestCard contest={contest} key={contest.id} />
         ))}
       </div>
-      <h1>Past Contests</h1>
+      <p className="font-bold">Past Contests</p>
       <div className="flex flex-wrap">
         {past_contests.map((contest) => (
           <ContestCard contest={contest} key={contest.id} />
@@ -40,16 +41,6 @@ const ContestsPage = async () => {
 export default ContestsPage;
 
 const ContestCard = async ({ contest }: { contest: Contest }) => {
-  const contestTesters = await prisma.contestTester.findMany({
-    where: {
-      contestId: contest.id,
-    },
-  });
-  const contestWriters = await prisma.contestWriter.findMany({
-    where: {
-      contestId: contest.id,
-    },
-  });
   return (
     <div
       className="card w-full bg-base-100 shadow-xl"
@@ -60,22 +51,6 @@ const ContestCard = async ({ contest }: { contest: Contest }) => {
           <Link href={`/contests/${contest.id}`}>{contest.title}</Link>
         </h2>
         <div className="md:grid md:grid-cols-2">
-          <div className="flex flex-col">
-            <p className="font-bold">Writers</p>
-            <p>
-              {contestWriters.map((writer) => (
-                <span key={writer.id}>{writer.userId}</span>
-              ))}
-            </p>
-          </div>
-          <div className="flex flex-col">
-            <p className="font-bold">Testers</p>
-            <p>
-              {contestTesters.map((tester) => (
-                <span key={tester.id}>{tester.userId}</span>
-              ))}
-            </p>
-          </div>
           <div className="flex">
             <p className="font-bold">Start Time</p>
             <p>{readableDateTime(contest.startTime.toISOString())}</p>

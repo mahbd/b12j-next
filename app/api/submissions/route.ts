@@ -94,8 +94,8 @@ const processTestCase = async (
   const body = JSON.stringify({
     language_id: LANGUAGE_MAP[language],
     source_code: code,
-    stdin: testCase.inputs,
-    expected_output: testCase.outputs,
+    stdin: testCase.input,
+    expected_output: testCase.output,
     cpu_time_limit: problem.timeLimit,
     memory_limit: problem.memoryLimit,
   });

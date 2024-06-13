@@ -18,9 +18,8 @@ const page = async ({ params: { id }, searchParams }: Props) => {
     notFound();
   }
   const testCases = await prisma.testCase.findMany({
-    where: { problemId: problem.id },
+    where: { problemId: problem.id, isSample: true },
     orderBy: { createdAt: "asc" },
-    take: problem.exampleQuantity,
   });
   return (
     <div className="w-full">
@@ -32,9 +31,9 @@ const page = async ({ params: { id }, searchParams }: Props) => {
       </div>
       <div dangerouslySetInnerHTML={{ __html: problem.description }} />
       <h2>Input</h2>
-      <div dangerouslySetInnerHTML={{ __html: problem.inputTerms }} />
+      <div dangerouslySetInnerHTML={{ __html: problem.input }} />
       <h2>Output</h2>
-      <div dangerouslySetInnerHTML={{ __html: problem.outputTerms }} />
+      <div dangerouslySetInnerHTML={{ __html: problem.output }} />
       <h2>Example</h2>
       <table>
         <thead>
@@ -47,10 +46,10 @@ const page = async ({ params: { id }, searchParams }: Props) => {
           {testCases.map((testCase) => (
             <tr key={testCase.id}>
               <td>
-                <pre>{testCase.inputs}</pre>
+                <pre>{testCase.input}</pre>
               </td>
               <td>
-                <pre>{testCase.outputs}</pre>
+                <pre>{testCase.output}</pre>
               </td>
             </tr>
           ))}
