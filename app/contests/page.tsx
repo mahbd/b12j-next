@@ -75,3 +75,10 @@ const ContestsCard = async ({
     </div>
   );
 };
+
+export async function generateMetadata() {
+  return {
+    title: "Contests",
+    description: "View all contests",
+  };
+}

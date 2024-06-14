@@ -6,6 +6,8 @@ import { Metadata, ResolvingMetadata } from "next";
 import { cache } from "react";
 import StartCountDown from "./StartCountDown";
 import { ContestProblem, Problem } from "@prisma/client";
+import Markdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 
 interface Props {
   params: { id: string };
@@ -41,11 +43,11 @@ const Contest = async ({ params: { id } }: Props) => {
       )}
       <h1 className="text-center mb-5">{contest.title}</h1>
       {contest.description && (
-        <div
-          dangerouslySetInnerHTML={{
-            __html: contest.description,
-          }}
-        />
+        <div className="prose">
+          <Markdown rehypePlugins={[rehypeRaw]} disallowedElements={["script"]}>
+            {contest.description}
+          </Markdown>
+        </div>
       )}
 
       {contest.startTime > new Date() && (
