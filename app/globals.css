@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-td,
-th {
-  border: 2px solid;
-}
-
 h1 {
   @apply text-4xl font-extrabold;
 }
@@ -21,4 +16,15 @@ h2 {
   top: 50%;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
+}
+
+.horizontal-center {
+  margin: 0 auto;
+}
+
+.table-bordered {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #e2e8f0;
 }

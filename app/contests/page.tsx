@@ -20,19 +20,18 @@ const ContestsPage = async () => {
     },
   });
   return (
-    <div className="w-full m-2">
-      <button className="btn btn-sm btn-primary">New Contest</button>
-      <p className="font-bold">Current or Upcoming Contests</p>
-      <div className="flex flex-wrap">
-        {upcoming_contests.map((contest) => (
-          <ContestCard contest={contest} key={contest.id} />
-        ))}
+    <div className="horizontal-center max-w-2xl w-full">
+      <div className="card w-full bg-base-100 shadow-xl mt-5">
+        <div className="card-body">
+          <p className="card-title text-sm">Current or Upcoming Contests</p>
+          <ContestsCard contests={upcoming_contests} />
+        </div>
       </div>
-      <p className="font-bold">Past Contests</p>
-      <div className="flex flex-wrap">
-        {past_contests.map((contest) => (
-          <ContestCard contest={contest} key={contest.id} />
-        ))}
+      <div className="card w-full bg-base-100 shadow-xl mt-5">
+        <div className="card-body">
+          <p className="card-title text-sm">Past Contests</p>
+          <ContestsCard contests={past_contests} />
+        </div>
       </div>
     </div>
   );
@@ -40,27 +39,39 @@ const ContestsPage = async () => {
 
 export default ContestsPage;
 
-const ContestCard = async ({ contest }: { contest: Contest }) => {
+const ContestsCard = async ({
+  contests,
+}: {
+  contests: Contest[] | undefined;
+}) => {
+  if (!contests || contests.length === 0) {
+    return <div>No contests</div>;
+  }
   return (
-    <div
-      className="card w-full bg-base-100 shadow-xl"
-      style={{ maxWidth: "800px" }}
-    >
-      <div className="card-body card-bordered">
-        <h2 className="card-title text-3xl link link-primary">
-          <Link href={`/contests/${contest.id}`}>{contest.title}</Link>
-        </h2>
-        <div className="md:grid md:grid-cols-2">
-          <div className="flex">
-            <p className="font-bold">Start Time</p>
-            <p>{readableDateTime(contest.startTime.toISOString())}</p>
-          </div>
-          <div className="flex">
-            <p className="font-bold">End Time</p>
-            <p>{readableDateTime(contest.endTime.toISOString())}</p>
-          </div>
-        </div>
-      </div>
+    <div className="overflow-x-auto">
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Start Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {contests.map((contest) => (
+            <tr key={contest.id}>
+              <td>
+                <Link
+                  className="link link-primary"
+                  href={`/contests/${contest.id}`}
+                >
+                  {contest.title}
+                </Link>
+              </td>
+              <td>{readableDateTime(contest.startTime.toISOString())}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
