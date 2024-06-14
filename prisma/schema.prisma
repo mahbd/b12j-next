@@ -36,9 +36,9 @@ model Contest {
 
   user User @relation(fields: [userId], references: [id])
 
-  contestProblems ContestProblem[]
-  submissions     Submission[]
-  tutorials       Tutorial[]
+  problems    ContestProblem[]
+  submissions Submission[]
+  tutorials   Tutorial[]
 }
 
 model Problem {
