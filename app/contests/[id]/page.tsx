@@ -1,53 +1,128 @@
-import { readableDateTime } from "@/components/helpers";
 import { auth } from "@/auth";
 import prisma from "@/prisma/client";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Metadata, ResolvingMetadata } from "next";
+import { cache } from "react";
+import StartCountDown from "./StartCountDown";
+import { ContestProblem, Problem } from "@prisma/client";
 
 interface Props {
   params: { id: string };
 }
 
-const Contest = async ({ params: { id } }: Props) => {
-  const session = await auth();
-  const contest = await prisma.contest.findUnique({
+const fetchContest = cache((id: string) =>
+  prisma.contest.findUnique({
     where: { id: id },
     include: {
-      contestProblems: { include: { problem: true } },
+      problems: { include: { problem: true } },
     },
-  });
+  })
+);
+
+const Contest = async ({ params: { id } }: Props) => {
+  const session = await auth();
+  const contest = await fetchContest(id);
   if (!contest) {
     notFound();
   }
 
   return (
-    <div className="w-full">
-      <Link className="btn btn-sm btn-primary" href={`/contests/${id}/edit`}>
-        Edit
-      </Link>
-      <h1>{contest.title}</h1>
-      <h2>Description</h2>
-      <div
-        dangerouslySetInnerHTML={{
-          __html: contest.description || "<h2>No description</h2>",
-        }}
-      />
-      <h2>Start Time</h2>
-      <p>{readableDateTime(contest.startTime.toISOString())}</p>
-      <h2>End Time</h2>
-      <p>{readableDateTime(contest.endTime.toISOString())}</p>
-      <h2>Problems</h2>
-      <ul>
-        {contest.contestProblems.map((contestProblem) => (
-          <li key={contestProblem.id}>
-            <a href={`/problems/${contestProblem.problemId}`}>
-              {contestProblem.problem.title}
-            </a>
-          </li>
-        ))}
-      </ul>
+    <div className="horizontal-center max-w-2xl w-full">
+      {session && session.user?.id === contest.userId && (
+        <div className="flex justify-end mt-2">
+          <Link
+            className="btn btn-xs btn-primary justify-end"
+            href={`/contests/${id}/edit`}
+          >
+            Edit
+          </Link>
+        </div>
+      )}
+      <h1 className="text-center mb-5">{contest.title}</h1>
+      {contest.description && (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: contest.description,
+          }}
+        />
+      )}
+
+      {contest.startTime > new Date() && (
+        <div className="both-center text-center mt-10">
+          <p className="text-lg">Contest Starts in:</p>
+          <StartCountDown startTime={contest.startTime} />
+        </div>
+      )}
+      {contest.startTime <= new Date() && (
+        <div>
+          <div className="card w-full bg-base-100 shadow-xl mt-5">
+            <div className="card-body">
+              <p className="card-title text-sm">Problems</p>
+              <ProblemTable contestProblems={contest.problems} />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default Contest;
+
+interface ExtendedContestProblem extends ContestProblem {
+  problem: Problem;
+}
+
+const ProblemTable = async ({
+  contestProblems,
+}: {
+  contestProblems: ExtendedContestProblem[] | undefined;
+}) => {
+  if (!contestProblems || contestProblems.length === 0) {
+    return <div>No contests</div>;
+  }
+  return (
+    <div className="overflow-x-auto">
+      <table className="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Start Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {contestProblems.map((contestProblem) => (
+            <tr key={contestProblem.id}>
+              <td>{contestProblem.problemIndex}</td>
+              <td>
+                <Link
+                  className="link link-primary"
+                  href={`/contests/${contestProblem.id}`}
+                >
+                  {contestProblem.problem.title}
+                </Link>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const id = params.id;
+  const previousImages = (await parent).openGraph?.images || [];
+  const contest = await fetchContest(id);
+
+  return {
+    title: contest?.title || "Contest not found",
+    openGraph: {
+      images: [...previousImages],
+    },
+  };
+}
