@@ -3,16 +3,17 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProblemFormData, problemSchema } from "./problemSchema";
 import { createOrUpdateProblem } from "./actions";
-import { Language, Problem } from "@prisma/client";
+import { Problem } from "@prisma/client";
 import { Controller, useForm } from "react-hook-form";
 import { CodeEditor, ErrorMessage, Spinner, MDEditor } from "@/components";
 import { useState } from "react";
 
 interface Props {
   problem?: Problem;
+  redirectUrl?: string;
 }
 
-const ProblemForm = ({ problem }: Props) => {
+const ProblemForm = ({ problem, redirectUrl }: Props) => {
   const {
     register,
     control,
@@ -39,8 +40,8 @@ const ProblemForm = ({ problem }: Props) => {
     const res = await createOrUpdateProblem(JSON.stringify(data), problem?.id);
     setIsSubmitting(false);
     if (res.ok) {
-      alert("Problem created successfully");
-      window.location.href = "/problems";
+      if (redirectUrl) window.location.href = redirectUrl;
+      else window.location.href = "/problems";
     } else {
       alert("Error creating Problem");
     }

@@ -10,7 +10,7 @@ export const createOrUpdateContest = async (
   contestId?: string
 ) => {
   const user = await isLogged(
-    "/api/auth/signin?callbackUrl=/contests/new/edit"
+    `/api/auth/signin?callbackUrl=/contests/${contestId || "new"}/edit`
   );
 
   const jsonData = JSON.parse(dataStr);

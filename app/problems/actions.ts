@@ -10,7 +10,7 @@ export const createOrUpdateProblem = async (
   problemId?: string
 ) => {
   const user = await isLogged(
-    "/api/auth/signin?callbackUrl=/problems/new/edit"
+    `/api/auth/signin?callbackUrl=/problems/${problemId || "new"}/edit`
   );
 
   const jsonData = JSON.parse(dataStr);

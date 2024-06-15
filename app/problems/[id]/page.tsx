@@ -45,9 +45,9 @@ const page = async ({ params: { id }, searchParams }: Props) => {
           </Link>
           <Link
             className="btn btn-xs btn-primary"
-            href={`/test-cases/new?problemId=${id}`}
+            href={`/problems/${id}/test-cases`}
           >
-            Add Test Case
+            Test Cases
           </Link>
         </div>
       )}

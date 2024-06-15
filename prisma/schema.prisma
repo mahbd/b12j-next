@@ -19,7 +19,6 @@ model User {
   contests      Contest[]
   problems      Problem[]
   submissions   Submission[]
-  testCases     TestCase[]
   tutorials     Tutorial[]
   Session       Session[]
   Authenticator Authenticator[]
@@ -123,10 +122,8 @@ model TestCase {
   isSample  Boolean  @default(false)
   output    String
   problemId String   @db.ObjectId
-  userId    String   @db.ObjectId
 
   problem Problem @relation(fields: [problemId], references: [id])
-  user    User    @relation(fields: [userId], references: [id])
 }
 
 model Account {
