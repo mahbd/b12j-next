@@ -5,6 +5,7 @@ import Link from "next/link";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import { auth } from "@/auth";
+import { cache } from "react";
 
 interface Props {
   params: { id: string };
@@ -13,14 +14,18 @@ interface Props {
   };
 }
 
+const fetchProblem = cache((id: string) =>
+  prisma.problem.findUnique({
+    where: { id },
+  })
+);
+
 const page = async ({ params: { id }, searchParams }: Props) => {
   const session = await auth();
   if (id === "new") {
     return redirect("/problems/new/edit");
   }
-  const problem = await prisma.problem.findUnique({
-    where: { id },
-  });
+  const problem = await fetchProblem(id);
   if (!problem) {
     notFound();
   }
@@ -96,3 +101,11 @@ const page = async ({ params: { id }, searchParams }: Props) => {
 };
 
 export default page;
+
+export const generateMetadata = async ({ params: { id } }: Props) => {
+  const problem = await fetchProblem(id);
+  return {
+    title: problem?.title,
+    description: problem?.description,
+  };
+};

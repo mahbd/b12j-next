@@ -1,8 +1,6 @@
-import Pagination from "@/components/Pagination";
 import prisma from "@/prisma/client";
 import { Problem } from "@prisma/client";
 import Link from "next/link";
-import React from "react";
 
 interface Props {
   searchParams: {
