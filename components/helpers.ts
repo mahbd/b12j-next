@@ -1,4 +1,7 @@
+import { auth } from "@/auth";
+import prisma from "@/prisma/client";
 import { Language, Role, User, Verdict } from "@prisma/client";
+import { redirect } from "next/navigation";
 
 export const readableDateTime = (dateString: string) => {
   const date = new Date(dateString);
@@ -58,6 +61,23 @@ export const JUDGE0ERROR_MAP = {
   13: Verdict.RUNTIME_ERROR,
   14: Verdict.RUNTIME_ERROR,
   15: Verdict.RUNTIME_ERROR,
+};
+
+export const isLogged = async (callbackUrl: string) => {
+  const session = await auth();
+  const user = session && session.user;
+  if (!user) {
+    redirect(callbackUrl);
+  }
+  const prismaUser = await prisma.user.findUnique({
+    where: {
+      email: user.email!,
+    },
+  });
+  if (!prismaUser) {
+    redirect(callbackUrl);
+  }
+  return prismaUser;
 };
 
 export const permissionOwner = (

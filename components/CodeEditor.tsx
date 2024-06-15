@@ -14,13 +14,14 @@ import "ace-builds/src-min-noconflict/snippets/python.js";
 interface Props {
   name: string;
   value: string;
+  language: "c_cpp" | "python";
   onChange: (event: any) => void;
 }
 
-const CodeEditorImp = ({ name, value, onChange }: Props) => {
+const CodeEditorImp = ({ name, value, language, onChange }: Props) => {
   return (
     <AceEditor
-      className="prose"
+      mode={language}
       value={value}
       onChange={onChange}
       name={name}

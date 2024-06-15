@@ -3,31 +3,15 @@
 import prisma from "@/prisma/client";
 import { contestSchema } from "./contestSchema";
 import { notFound, redirect } from "next/navigation";
-import { permissionOwnerStaff } from "@/components/helpers";
-import { auth } from "@/auth";
-
-const isLogged = async () => {
-  const session = await auth();
-  const user = session && session.user;
-  if (!user) {
-    redirect("/api/auth/signin?callbackUrl=/contests/new/edit");
-  }
-  const prismaUser = await prisma.user.findUnique({
-    where: {
-      email: user.email!,
-    },
-  });
-  if (!prismaUser) {
-    redirect("/api/auth/signin?callbackUrl=/contests/new/edit");
-  }
-  return prismaUser;
-};
+import { isLogged, permissionOwnerStaff } from "@/components/helpers";
 
 export const createOrUpdateContest = async (
   dataStr: string,
   contestId?: string
 ) => {
-  const user = await isLogged();
+  const user = await isLogged(
+    "/api/auth/signin?callbackUrl=/contests/new/edit"
+  );
 
   const jsonData = JSON.parse(dataStr);
   const validation = contestSchema.safeParse(jsonData);

@@ -79,7 +79,7 @@ const MDEditor = ({ name, error, onChange, placeholder, value }: Props) => {
     } as Options;
   }, []);
   return (
-    <div className="w-full h-auto">
+    <div className={`w-full h-auto`}>
       <SimpleMDE
         id={`simple-mde-${name}`}
         value={value}

@@ -22,6 +22,7 @@ const SubmissionForm = ({ problemId, contestId }: Props) => {
     register,
     handleSubmit,
     control,
+    getValues,
     formState: { errors },
   } = useForm<SubmissionFormData>({
     resolver: zodResolver(submissionSchema),
@@ -76,6 +77,9 @@ const SubmissionForm = ({ problemId, contestId }: Props) => {
           render={({ field }) => {
             return (
               <CodeEditor
+                language={
+                  getValues("language") === Language.C_CPP ? "c_cpp" : "python"
+                }
                 name={field.name}
                 onChange={field.onChange}
                 value={field.value}

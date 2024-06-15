@@ -1,7 +1,10 @@
 import prisma from "@/prisma/client";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import SubmissionForm from "./SubmissionForm";
 import Link from "next/link";
+import Markdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import { auth } from "@/auth";
 
 interface Props {
   params: { id: string };
@@ -11,6 +14,10 @@ interface Props {
 }
 
 const page = async ({ params: { id }, searchParams }: Props) => {
+  const session = await auth();
+  if (id === "new") {
+    return redirect("/problems/new/edit");
+  }
   const problem = await prisma.problem.findUnique({
     where: { id },
   });
@@ -22,19 +29,47 @@ const page = async ({ params: { id }, searchParams }: Props) => {
     orderBy: { createdAt: "asc" },
   });
   return (
-    <div className="w-full">
-      <Link href={`/test-cases/new?problemId=${id}`}>Add Test Case</Link>
+    <div className="horizontal-center lg:max-w-4xl w-full mx-5 md:mx-10 lg:mx-auto p-2">
+      {session && session.user?.id === problem.userId && (
+        <div className="flex justify-end mt-2 gap-3">
+          <Link
+            className="btn btn-xs btn-primary"
+            href={`/problems/${id}/edit`}
+          >
+            Edit
+          </Link>
+          <Link
+            className="btn btn-xs btn-primary"
+            href={`/test-cases/new?problemId=${id}`}
+          >
+            Add Test Case
+          </Link>
+        </div>
+      )}
       <div className="text-center my-5">
         <h1>{problem.title}</h1>
         <p>Time Limit per test: {problem.timeLimit} second(s)</p>
         <p>Memory Limit per test: {problem.memoryLimit} megabytes</p>
       </div>
-      <div dangerouslySetInnerHTML={{ __html: problem.description }} />
-      <h2>Input</h2>
-      <div dangerouslySetInnerHTML={{ __html: problem.input }} />
-      <h2>Output</h2>
-      <div dangerouslySetInnerHTML={{ __html: problem.output }} />
-      <h2>Example</h2>
+      <h2 className="text-lg">Description</h2>
+      <div className="prose">
+        <Markdown rehypePlugins={[rehypeRaw]} disallowedElements={["script"]}>
+          {problem.description}
+        </Markdown>
+      </div>
+      <h2 className="text-lg">Input</h2>
+      <div className="prose">
+        <Markdown rehypePlugins={[rehypeRaw]} disallowedElements={["script"]}>
+          {problem.input}
+        </Markdown>
+      </div>
+      <h2 className="text-lg">Output</h2>
+      <div className="prose">
+        <Markdown rehypePlugins={[rehypeRaw]} disallowedElements={["script"]}>
+          {problem.output}
+        </Markdown>
+      </div>
+      <h2 className="text-lg">Example</h2>
       <table>
         <thead>
           <tr>
