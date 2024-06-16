@@ -47,7 +47,11 @@ export const createOrUpdateContest = async (
       });
       if (problems.length > 0) {
         await prisma.contestProblem.createMany({
-          data: problems,
+          data: problems.map((problem) => ({
+            contestId: contestId,
+            problemId: problem.problemId!,
+            problemIndex: problem.problemIndex!,
+          })),
         });
       }
     } catch (e: any) {
@@ -61,7 +65,10 @@ export const createOrUpdateContest = async (
           ...data,
           userId: user!.id,
           problems: {
-            create: problems,
+            create: problems.map((problem) => ({
+              problemId: problem.problemId!,
+              problemIndex: problem.problemIndex!,
+            })),
           },
         },
       });
