@@ -65,7 +65,19 @@ export const PUT = async (req: Request) => {
 
   const body = (await req.json()) as J0Callback;
   if (body.status.id !== 3) {
-    const details = `Failed in test case ${testNumber} ${body.status.description}:\n${body.message}\n${body.stderr}\n${body.compile_output}\n${body.stdout}\n${body.memory}`;
+    const message = body.message ? Buffer.from(body.message, "base64") : "";
+    const stderr = body.stderr ? Buffer.from(body.stderr, "base64") : "";
+    const compile_output = body.compile_output
+      ? Buffer.from(body.compile_output, "base64")
+      : "";
+    const stdout = body.stdout ? Buffer.from(body.stdout, "base64") : "";
+    const details = `<p>Failed in test case ${testNumber} ${
+      body.status.description
+    }</p>
+    <p>Message: ${message}</p><p>Error: ${stderr}</p>
+    <p>Compile Output: ${compile_output}</p>
+    <p>Standard Output: ${stdout}</p>
+    <p>Memory: ${body.memory / 1024} MB</p>`;
     await prisma.submission.update({
       where: {
         id: submissionId,
