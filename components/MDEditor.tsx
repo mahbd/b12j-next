@@ -3,9 +3,11 @@ import { Options } from "easymde";
 import "easymde/dist/easymde.min.css";
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
+import { Skeleton } from "@/components";
 
 const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
   ssr: false,
+  loading: () => <Skeleton height={320} />,
 });
 
 interface Props {
