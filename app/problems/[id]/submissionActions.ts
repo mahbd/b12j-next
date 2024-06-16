@@ -5,7 +5,9 @@ import { submissionSchema } from "./submissionSchema";
 import prisma from "@/prisma/client";
 import { Verdict } from "@prisma/client";
 
-export const createSubmission = async (dataStr: string) => {
+export const createSubmission = async (
+  dataStr: string
+): Promise<{ ok: boolean; message: string }> => {
   const user = await isLogged(`/api/auth/signin?callbackUrl=/problems/`);
   const jsonData = JSON.parse(dataStr);
   const validation = submissionSchema.safeParse(jsonData);
@@ -24,7 +26,7 @@ export const createSubmission = async (dataStr: string) => {
     console.error(e);
     return { ok: false, message: e.toString() };
   }
-  return { ok: true };
+  return { ok: true, message: "Submission created" };
 };
 
 export const requestJudge0 = async (

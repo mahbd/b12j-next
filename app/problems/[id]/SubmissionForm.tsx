@@ -7,6 +7,7 @@ import z from "zod";
 import { submissionSchema } from "./submissionSchema";
 import { useEffect, useState } from "react";
 import { Language } from "@prisma/client";
+import { createSubmission } from "./submissionActions";
 
 const decoder = new TextDecoder();
 
@@ -34,26 +35,16 @@ const SubmissionForm = ({ problemId, contestId }: Props) => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [verdict, setVerdict] = useState("");
 
   return (
     <form
       onSubmit={handleSubmit(async (data: SubmissionFormData) => {
         setIsSubmitting(true);
-        const reader = (
-          await fetch("/api/submissions", {
-            method: "POST",
-            body: JSON.stringify(data),
-          })
-        ).body?.getReader();
-        while (true) {
-          const { done, value } = await reader!.read();
-          if (done) {
-            window.location.href = `/submissions`;
-            break;
-          }
-          const text = decoder.decode(value);
-          setVerdict(text);
+        const res = await createSubmission(JSON.stringify(data));
+        if (!res.ok) {
+          alert(res.message);
+        } else {
+          window.location.href = "/submissions";
         }
         setIsSubmitting(false);
       })}
@@ -89,17 +80,6 @@ const SubmissionForm = ({ problemId, contestId }: Props) => {
         />
         <ErrorMessage>{errors.code?.message}</ErrorMessage>
       </div>
-      {verdict && (
-        <div className="form-control">
-          <label htmlFor="verdict">Verdict</label>
-          <input
-            type="text"
-            className="input input-bordered"
-            value={verdict}
-            readOnly
-          />
-        </div>
-      )}
       <button
         type="submit"
         className="btn btn-primary btn-sm border-2 mb-32"
