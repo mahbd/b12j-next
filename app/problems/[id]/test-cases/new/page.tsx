@@ -28,15 +28,6 @@ const AddTestCase = async ({ params: { id: problemId } }: Props) => {
 
 export default AddTestCase;
 
-export async function generateMetadata(
-  parent: ResolvingMetadata
-): Promise<Metadata> {
-  const previousImages = (await parent).openGraph?.images || [];
-
-  return {
-    title: "New TestCase",
-    openGraph: {
-      images: [...previousImages],
-    },
-  };
-}
+export const metadata: Metadata = {
+  title: "New TestCase",
+};

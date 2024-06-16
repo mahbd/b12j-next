@@ -66,7 +66,9 @@ const TestCaseForm = ({ problemId, redirectUrl }: Props) => {
           const input = getValues("input");
           const res = await generateOutput(input, problemId);
           setValue("output", res.message);
-          setOutputGenerated(true);
+          if (res.ok) {
+            setOutputGenerated(true);
+          }
           setIsSubmitting(false);
         }}
         type="button"

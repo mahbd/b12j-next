@@ -97,6 +97,7 @@ enum Verdict {
   COMPILATION_ERROR
   MEMORY_LIMIT_EXCEEDED
   PENDING
+  RUNNING
 }
 
 model Submission {

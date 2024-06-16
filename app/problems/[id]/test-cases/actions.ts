@@ -65,20 +65,24 @@ export const generateOutput = async (inputs: string, problemId: string) => {
   const JUDGE0_KEY = process.env.JUDGE0_AUTH_KEY;
   const JUDGE0_URL = process.env.JUDGE0_URL;
 
-  const res = await fetch(`${JUDGE0_URL}/submissions?base64_encoded=false`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Auth-User": JUDGE0_KEY!,
-    },
-    body: JSON.stringify({
-      language_id: 54, // TODO: Add language selection
-      source_code: sourceCode,
-      stdin: stdin,
-      cpu_time_limit: timeLimit,
-      memory_limit: memoryLimit,
-    }),
-  });
+  const body = {
+    language_id: 54, // TODO: Add language selection
+    source_code: Buffer.from(sourceCode || "").toString("base64"),
+    stdin: Buffer.from(stdin).toString("base64"),
+    cpu_time_limit: timeLimit,
+    memory_limit: memoryLimit,
+  };
+
+  const res = await fetch(
+    `${JUDGE0_URL}/submissions?base64_encoded=true&X-Auth-User=true&wait=true`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    }
+  );
 
   const data = await res.json();
   const submissionId = data.token;
@@ -98,12 +102,14 @@ export const generateOutput = async (inputs: string, problemId: string) => {
     const status = submissionData.status_id;
     if (status === 3) {
       // decode base64
+      if (!submissionData.stdout) return { ok: true, message: "" };
       const decodedOutput = Buffer.from(
         submissionData.stdout,
         "base64"
       ).toString("utf-8");
       return { ok: true, message: decodedOutput };
     } else if (status > 3) {
+      if (!submissionData.stderr) return { ok: false, message: "" };
       const decodedError = Buffer.from(
         submissionData.stderr,
         "base64"
