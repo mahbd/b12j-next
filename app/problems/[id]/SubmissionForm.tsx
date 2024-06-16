@@ -1,6 +1,6 @@
 "use client";
 
-import { CodeEditor, ErrorMessage, Spinner } from "@/components";
+import { AceEditor, ErrorMessage, Spinner } from "@/components";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import z from "zod";
@@ -67,7 +67,7 @@ const SubmissionForm = ({ problemId, contestId }: Props) => {
           control={control}
           render={({ field }) => {
             return (
-              <CodeEditor
+              <AceEditor
                 language={
                   getValues("language") === Language.C_CPP ? "c_cpp" : "python"
                 }

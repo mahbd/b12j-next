@@ -1,6 +1,6 @@
 "use client";
 
-import AceEditor from "react-ace";
+import BaseAceEditor from "react-ace";
 import dynamic from "next/dynamic";
 
 import "ace-builds/src-min-noconflict/mode-c_cpp.js";
@@ -20,7 +20,7 @@ interface Props {
 
 const CodeEditorImp = ({ name, value, language, onChange }: Props) => {
   return (
-    <AceEditor
+    <BaseAceEditor
       mode={language}
       value={value}
       onChange={onChange}
@@ -36,7 +36,7 @@ const CodeEditorImp = ({ name, value, language, onChange }: Props) => {
   );
 };
 
-const CodeEditor = dynamic(() => Promise.resolve(CodeEditorImp), {
+const AceEditor = dynamic(() => Promise.resolve(CodeEditorImp), {
   ssr: false,
 });
-export default CodeEditor;
+export default AceEditor;

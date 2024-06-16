@@ -9,7 +9,7 @@ import {
 } from "react-hook-form";
 import ErrorMessage from "./ErrorMessage";
 import { ReactNode, useState } from "react";
-import { MDEditor, Spinner } from ".";
+import { AceEditor, MDEditor, Spinner } from ".";
 import { ZodObject } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -35,26 +35,52 @@ const useFormComponents = <T extends FieldValues>(
     name: Path<T>;
     label?: string | null;
     placeholder?: string;
-    type?: "text" | "datetime-local";
+    type?: "text" | "datetime-local" | "number";
   }
 
-  const Input = ({ name, label, placeholder, type }: InputProps) => (
-    <div className="form-control">
-      {label !== null && (
-        <label className="label">
-          <span className="label-text">
-            {label ? label : reformatString(name)}
-          </span>
-        </label>
-      )}
-      <input
-        className={`input input-sm input-bordered ${
-          errors[name] ? "input-error" : ""
-        }`}
-        type={type || "text"}
-        placeholder={placeholder}
-        {...register(name, { valueAsDate: type === "datetime-local" })}
-      />
+  const Input = ({ name, label, placeholder, type }: InputProps) => {
+    let extraArgs = {};
+    if (type === "datetime-local") {
+      extraArgs = {
+        valueAsDate: true,
+      };
+    } else if (type === "number") {
+      extraArgs = {
+        valueAsNumber: true,
+      };
+    }
+    return (
+      <div className="form-control">
+        {label !== null && (
+          <label className="label">
+            <span className="label-text">
+              {label ? label : reformatString(name)}
+            </span>
+          </label>
+        )}
+        <input
+          className={`input input-sm input-bordered ${
+            errors[name] ? "input-error" : ""
+          }`}
+          type={type || "text"}
+          placeholder={placeholder}
+          {...register(name, extraArgs)}
+        />
+        <ErrorMessage>{errors[name]?.message as ReactNode}</ErrorMessage>
+      </div>
+    );
+  };
+
+  const CheckBox = ({ name, label }: { name: Path<T>; label?: string }) => (
+    <div className="flex">
+      <label className="label">
+        <input
+          className="checkbox rounded-sm checkbox-sm checkbox-primary me-3"
+          type="checkbox"
+          {...register(name)}
+        />
+        {label}
+      </label>
       <ErrorMessage>{errors[name]?.message as ReactNode}</ErrorMessage>
     </div>
   );
@@ -117,6 +143,32 @@ const useFormComponents = <T extends FieldValues>(
     </div>
   );
 
+  interface CodeEditorProps {
+    name: Path<T>;
+    language?: "c_cpp" | "python";
+  }
+
+  const CodeEditor = ({ name, language }: CodeEditorProps) => (
+    <div className="w-full">
+      <label htmlFor={name}>{reformatString(name)}</label>
+      <Controller
+        name={name}
+        control={control}
+        render={({ field }) => {
+          return (
+            <AceEditor
+              name={field.name}
+              language={language || "c_cpp"}
+              onChange={field.onChange}
+              value={field.value}
+            />
+          );
+        }}
+      />
+      <ErrorMessage>{errors[name]?.message as ReactNode}</ErrorMessage>
+    </div>
+  );
+
   const SubmitBtn = ({ label }: { label: string }) => (
     <div className="flex justify-center">
       <button
@@ -129,10 +181,12 @@ const useFormComponents = <T extends FieldValues>(
     </div>
   );
   return {
+    CheckBox,
+    CodeEditor,
+    Editor,
     Input,
     Select,
     SubmitBtn,
-    Editor,
     control,
     handleSubmit,
     setError,
