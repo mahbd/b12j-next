@@ -8,17 +8,21 @@ interface Props {
 }
 
 const EditContest = async ({ params: { id } }: Props) => {
+  const problems = await prisma.problem.findMany({
+    select: { id: true, title: true },
+  });
   if (id === "new") {
     return (
       <div className="m-2 w-full">
         <h1 className="text-center text-4xl">New Contest</h1>
-        <ContestForm />
+        <ContestForm problems={problems} />
       </div>
     );
   }
 
   const contest = await prisma.contest.findUnique({
     where: { id: id },
+    include: { problems: true },
   });
   if (!contest) {
     notFound();
@@ -27,7 +31,7 @@ const EditContest = async ({ params: { id } }: Props) => {
   return (
     <div className="m-2 w-full">
       <h1 className="text-center text-4xl">Update Contest</h1>
-      <ContestForm contest={contest} />
+      <ContestForm contest={contest} problems={problems} />
     </div>
   );
 };

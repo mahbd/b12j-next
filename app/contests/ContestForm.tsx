@@ -1,53 +1,65 @@
 "use client";
 
-import { ErrorMessage, Spinner, MDEditor } from "@/components";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
-import z from "zod";
-import { contestSchema } from "./contestSchema";
+import { useFieldArray } from "react-hook-form";
+import { ContestFormData, contestSchema } from "./contestSchema";
 import { createOrUpdateContest } from "./actions";
-import { Contest } from "@prisma/client";
-import { useState } from "react";
+import { Contest, ContestProblem } from "@prisma/client";
+import { FaPlus } from "react-icons/fa";
+import { RiDeleteBin6Fill } from "react-icons/ri";
+import useFormComponents from "@/components/useFormComponents";
 
-export type ContestFormData = z.infer<typeof contestSchema>;
+interface ExtendedContest extends Contest {
+  problems: ContestProblem[];
+}
 
-const ContestForm = ({ contest }: { contest?: Contest }) => {
+interface Props {
+  contest?: ExtendedContest;
+  problems: { id: string; title: string }[];
+}
+
+const ContestForm = ({ contest, problems }: Props) => {
   const {
-    register,
+    Input,
+    Select,
+    Editor,
+    SubmitBtn,
     control,
     handleSubmit,
     setError,
-    formState: { errors },
-  } = useForm<ContestFormData>({
-    resolver: zodResolver(contestSchema),
-    defaultValues: {
-      title: contest?.title || "",
-      description: contest?.description || "",
-      // @ts-ignore
-      startTime: formatDateToISOString(contest?.startTime || new Date()),
-      // @ts-ignore
-      endTime: formatDateToISOString(contest?.endTime || new Date()),
-    },
+    setIsSubmitting,
+  } = useFormComponents<ContestFormData>(contestSchema, {
+    title: contest?.title || "",
+    description: contest?.description || "",
+    // @ts-ignore
+    startTime: formatDateToISOString(contest?.startTime || new Date()),
+    // @ts-ignore
+    endTime: formatDateToISOString(contest?.endTime || new Date()),
+    problems: contest?.problems || [],
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "problems",
+  });
 
   const doSubmit = async (data: ContestFormData) => {
     const startTime = data.startTime;
     const endTime = data.endTime;
-    if (startTime < new Date()) {
-      setError("startTime", {
-        type: "manual",
-        message: "Start time must be in the future",
-      });
-      return;
-    }
-    if (startTime >= endTime) {
-      setError("endTime", {
-        type: "manual",
-        message: "End time must be after start time",
-      });
-      return;
+    if (!contest) {
+      if (startTime < new Date()) {
+        setError("startTime", {
+          type: "manual",
+          message: "Start time must be in the future",
+        });
+        return;
+      }
+      if (startTime >= endTime) {
+        setError("endTime", {
+          type: "manual",
+          message: "End time must be after start time",
+        });
+        return;
+      }
     }
     setIsSubmitting(true);
     const res = await createOrUpdateContest(JSON.stringify(data), contest?.id);
@@ -61,77 +73,57 @@ const ContestForm = ({ contest }: { contest?: Contest }) => {
   };
 
   return (
-    <div className="flex justify-center align-middle">
-      <form
-        className="container max-w-2xl m-5"
-        onSubmit={handleSubmit(doSubmit)}
-      >
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Title</span>
-          </label>
-          <input
-            className={`input input-sm input-bordered ${
-              errors.title ? "input-error" : ""
-            }`}
-            type="text"
-            {...register("title")}
-          />
-          <ErrorMessage>{errors.title?.message}</ErrorMessage>
-        </div>
-        <div className="form-control">
-          <label htmlFor="description">Description</label>
-          <Controller
-            name="description"
-            control={control}
-            render={({ field }) => {
-              return (
-                <MDEditor
-                  name={field.name}
-                  onChange={field.onChange}
-                  value={field.value}
-                />
-              );
-            }}
-          />
-          <ErrorMessage>{errors.description?.message}</ErrorMessage>
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Start Time</span>
-          </label>
-          <input
-            type="datetime-local"
-            className={`input input-sm input-bordered ${
-              errors.startTime ? "input-error" : ""
-            }`}
-            {...register("startTime", { valueAsDate: true })}
-          />
-          <ErrorMessage>{errors.startTime?.message}</ErrorMessage>
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">End Time</span>
-          </label>
-          <input
-            className={`input input-sm input-bordered ${
-              errors.endTime ? "input-error" : ""
-            }`}
-            type="datetime-local"
-            {...register("endTime", { valueAsDate: true })}
-          />
-          <ErrorMessage>{errors.endTime?.message}</ErrorMessage>
-        </div>
-        <button
-          type="submit"
-          className="btn btn-primary btn-sm"
-          disabled={isSubmitting}
-        >
-          {isSubmitting && <Spinner />} {contest ? "Update" : "Create"} Contest
-        </button>
-      </form>
-    </div>
+    <form
+      className="horizontal-center lg:max-w-2xl w-full mx-5 md:mx-10 lg:mx-auto p-2"
+      onSubmit={handleSubmit(doSubmit)}
+    >
+      <Input name="title" />
+      <Editor name="description" />
+      <Input name="startTime" type="datetime-local" />
+      <Input name="endTime" type="datetime-local" />
+      <ContestProblemForm />
+      <SubmitBtn label={`${contest ? "Update" : "Create"} Contest`} />
+    </form>
   );
+
+  function ContestProblemForm() {
+    return (
+      <div>
+        <p className="font-bold text-lg mt-3">Select Problems</p>
+        <ul>
+          {fields.map((item, index) => (
+            <div key={item.id} className="flex">
+              <Input
+                name={`problems.${index}.problemIndex`}
+                label={null}
+                placeholder="Problem Index"
+              />
+              <Select
+                name={`problems.${index}.problemId`}
+                items={problems}
+                valueKey="id"
+                labelKey="title"
+              />
+              <button
+                type="button"
+                className={"btn btn-error btn-sm ms-2 px-3"}
+                onClick={() => remove(index)}
+              >
+                <RiDeleteBin6Fill className="text-lg" />
+              </button>
+            </div>
+          ))}
+        </ul>
+        <button
+          type="button"
+          className={"btn btn-sm btn-success mt-2"}
+          onClick={() => append({ contestId: contest?.id })}
+        >
+          <FaPlus className="mr-1" />
+        </button>
+      </div>
+    );
+  }
 };
 
 export default ContestForm;

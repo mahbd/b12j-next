@@ -5,7 +5,6 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
 import { IoMdMenu, IoMdClose } from "react-icons/io";
-import Image from "next/image";
 
 export const navLinks = [
   {

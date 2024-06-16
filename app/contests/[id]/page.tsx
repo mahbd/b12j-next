@@ -30,7 +30,7 @@ const Contest = async ({ params: { id } }: Props) => {
   }
 
   return (
-    <div className="horizontal-center lg:max-w-2 xl w-full mx-5 md:mx-10 lg:mx-auto p-2">
+    <div className="horizontal-center lg:max-w-4xl w-full mx-5 md:mx-10 lg:mx-auto p-2">
       {session && session.user?.id === contest.userId && (
         <div className="flex justify-end mt-2">
           <Link
@@ -82,15 +82,15 @@ const ProblemTable = async ({
   contestProblems: ExtendedContestProblem[] | undefined;
 }) => {
   if (!contestProblems || contestProblems.length === 0) {
-    return <div>No contests</div>;
+    return <div>No problems</div>;
   }
   return (
     <div className="overflow-x-auto">
       <table className="table">
         <thead>
           <tr>
-            <th>#</th>
-            <th>Start Time</th>
+            <th>Index</th>
+            <th>Problem Title</th>
           </tr>
         </thead>
         <tbody>
