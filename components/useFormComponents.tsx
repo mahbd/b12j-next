@@ -26,6 +26,7 @@ const useFormComponents = <T extends FieldValues>(
   const {
     control,
     formState: { errors },
+    getValues,
     handleSubmit,
     register,
     setError,
@@ -187,7 +188,9 @@ const useFormComponents = <T extends FieldValues>(
     Input,
     Select,
     SubmitBtn,
+
     control,
+    getValues,
     handleSubmit,
     setError,
     setIsSubmitting,

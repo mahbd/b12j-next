@@ -1,17 +1,9 @@
 "use client";
 
-import { AceEditor, ErrorMessage, Spinner } from "@/components";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, Controller } from "react-hook-form";
-import z from "zod";
-import { submissionSchema } from "./submissionSchema";
-import { useEffect, useState } from "react";
+import { SubmissionFormData, submissionSchema } from "./submissionSchema";
 import { Language } from "@prisma/client";
 import { createSubmission } from "./submissionActions";
-
-const decoder = new TextDecoder();
-
-export type SubmissionFormData = z.infer<typeof submissionSchema>;
+import useFormComponents from "@/components/useFormComponents";
 
 interface Props {
   problemId: string;
@@ -20,21 +12,18 @@ interface Props {
 
 const SubmissionForm = ({ problemId, contestId }: Props) => {
   const {
-    register,
-    handleSubmit,
-    control,
-    getValues,
-    formState: { errors },
-  } = useForm<SubmissionFormData>({
-    resolver: zodResolver(submissionSchema),
-    defaultValues: {
-      problemId: problemId,
-      contestId: contestId,
-      language: Language.C_CPP,
-    },
-  });
+    CodeEditor,
+    Select,
+    SubmitBtn,
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+    getValues,
+    handleSubmit,
+    setIsSubmitting,
+  } = useFormComponents<SubmissionFormData>(submissionSchema, {
+    problemId: problemId,
+    contestId: contestId,
+    language: Language.C_CPP,
+  });
 
   return (
     <form
@@ -49,44 +38,24 @@ const SubmissionForm = ({ problemId, contestId }: Props) => {
         setIsSubmitting(false);
       })}
     >
-      <div className="form-control">
-        <label htmlFor="checkerId">Language</label>
-        <select
-          className="select select-bordered select-sm"
-          {...register("language")}
-        >
-          <option value={Language.C_CPP}>C/C++</option>
-          <option value={Language.PYTHON3}>Python 3</option>
-        </select>
-        <ErrorMessage>{errors.language?.message}</ErrorMessage>
-      </div>
-      <div className="form-control">
-        <label htmlFor="code">Code</label>
-        <Controller
-          name="code"
-          control={control}
-          render={({ field }) => {
-            return (
-              <AceEditor
-                language={
-                  getValues("language") === Language.C_CPP ? "c_cpp" : "python"
-                }
-                name={field.name}
-                onChange={field.onChange}
-                value={field.value}
-              />
-            );
-          }}
-        />
-        <ErrorMessage>{errors.code?.message}</ErrorMessage>
-      </div>
-      <button
-        type="submit"
-        className="btn btn-primary btn-sm border-2 mb-32"
-        disabled={isSubmitting}
-      >
-        {isSubmitting && <Spinner />} Submit
-      </button>
+      <Select
+        name="language"
+        items={[
+          {
+            value: Language.C_CPP,
+            label: "C/C++",
+          },
+          {
+            value: Language.PYTHON3,
+            label: "Python 3",
+          },
+        ]}
+      />
+      <CodeEditor
+        name="code"
+        language={getValues("language") === Language.C_CPP ? "c_cpp" : "python"}
+      />
+      <SubmitBtn label="Submit" />
     </form>
   );
 };

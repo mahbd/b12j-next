@@ -7,3 +7,5 @@ export const submissionSchema = z.object({
   language: z.nativeEnum(Language),
   code: z.string().min(50).max(65000),
 });
+
+export type SubmissionFormData = z.infer<typeof submissionSchema>;
