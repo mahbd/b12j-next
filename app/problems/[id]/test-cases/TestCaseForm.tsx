@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-
 import { TestCaseFormData, testCaseSchema } from "./testCaseSchema";
 import { createOrUpdateTestCase, generateOutput } from "./actions";
-import { ErrorMessage, Spinner } from "@/components";
+import { Spinner } from "@/components";
+import useFormComponents from "@/components/useFormComponents";
 
 interface Props {
   problemId: string;
@@ -15,19 +13,17 @@ interface Props {
 
 const TestCaseForm = ({ problemId, redirectUrl }: Props) => {
   const {
-    register,
+    SubmitBtn,
+    Textarea,
     getValues,
     setValue,
     handleSubmit,
-    formState: { errors },
-  } = useForm<TestCaseFormData>({
-    resolver: zodResolver(testCaseSchema),
-    defaultValues: {
-      problemId: problemId,
-    },
+    isSubmitting,
+    setIsSubmitting,
+  } = useFormComponents<TestCaseFormData>(testCaseSchema, {
+    problemId: problemId,
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [outputGenerated, setOutputGenerated] = useState(false);
 
   const doSubmit = async (data: TestCaseFormData) => {
@@ -47,18 +43,7 @@ const TestCaseForm = ({ problemId, redirectUrl }: Props) => {
       className="horizontal-center lg:max-w-2xl w-full mx-5 md:mx-10 lg:mx-auto p-2"
       onSubmit={handleSubmit(doSubmit)}
     >
-      <div className="form-control">
-        <label className="label">
-          <span className="label-text">Input</span>
-        </label>
-        <textarea
-          className={`textarea textarea-bordered ${
-            errors.input ? "textarea-error" : ""
-          }`}
-          {...register("input")}
-        />
-        <ErrorMessage>{errors.input?.message}</ErrorMessage>
-      </div>
+      <Textarea name="input" />
       <button
         className="btn btn-sm btn-primary my-3"
         onClick={async () => {
@@ -76,27 +61,8 @@ const TestCaseForm = ({ problemId, redirectUrl }: Props) => {
       >
         {isSubmitting && <Spinner />} Generate Output
       </button>
-      <div className="form-control">
-        <label className="label">
-          <span className="label-text">Output</span>
-        </label>
-        <textarea
-          className={`textarea textarea-bordered ${
-            errors.input ? "textarea-error" : ""
-          }`}
-          {...register("output")}
-        />
-        <ErrorMessage>{errors.output?.message}</ErrorMessage>
-      </div>
-      {outputGenerated && (
-        <button
-          type="submit"
-          className="btn btn-primary btn-sm my-5"
-          disabled={isSubmitting}
-        >
-          {isSubmitting && <Spinner />} Create TestCase
-        </button>
-      )}
+      <Textarea name="output" />
+      {outputGenerated && <SubmitBtn label="Create Test Case" />}
     </form>
   );
 };

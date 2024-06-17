@@ -30,6 +30,7 @@ const useFormComponents = <T extends FieldValues>(
     handleSubmit,
     register,
     setError,
+    setValue,
   } = useForm<T>({ resolver: zodResolver(resolver), defaultValues });
 
   interface InputProps {
@@ -71,6 +72,25 @@ const useFormComponents = <T extends FieldValues>(
       </div>
     );
   };
+
+  interface TextAreaProps {
+    name: Path<T>;
+  }
+
+  const Textarea = ({ name }: TextAreaProps) => (
+    <div className="form-control">
+      <label className="label">
+        <span className="label-text">{reformatString(name)}</span>
+      </label>
+      <textarea
+        className={`textarea textarea-bordered ${
+          errors[name] ? "textarea-error" : ""
+        }`}
+        {...register(name)}
+      />
+      <ErrorMessage>{errors[name]?.message as ReactNode}</ErrorMessage>
+    </div>
+  );
 
   const CheckBox = ({ name, label }: { name: Path<T>; label?: string }) => (
     <div className="flex">
@@ -188,12 +208,15 @@ const useFormComponents = <T extends FieldValues>(
     Input,
     Select,
     SubmitBtn,
+    Textarea,
 
     control,
     getValues,
     handleSubmit,
     setError,
+    isSubmitting,
     setIsSubmitting,
+    setValue,
   };
 };
 
