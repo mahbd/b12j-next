@@ -11,18 +11,22 @@ const EditContest = async ({ params: { id } }: Props) => {
   const problems = await prisma.problem.findMany({
     select: { id: true, title: true },
   });
+  const users = await prisma.user.findMany({
+    select: { id: true, name: true },
+  });
+
   if (id === "new") {
     return (
       <div className="m-2 w-full">
         <h1 className="text-center text-4xl">New Contest</h1>
-        <ContestForm problems={problems} />
+        <ContestForm problems={problems} users={users} />
       </div>
     );
   }
 
   const contest = await prisma.contest.findUnique({
     where: { id: id },
-    include: { problems: true },
+    include: { problems: true, moderators: true },
   });
   if (!contest) {
     notFound();
@@ -31,7 +35,7 @@ const EditContest = async ({ params: { id } }: Props) => {
   return (
     <div className="m-2 w-full">
       <h1 className="text-center text-4xl">Update Contest</h1>
-      <ContestForm contest={contest} problems={problems} />
+      <ContestForm contest={contest} problems={problems} users={users} />
     </div>
   );
 };

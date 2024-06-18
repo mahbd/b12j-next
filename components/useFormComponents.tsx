@@ -108,18 +108,19 @@ const useFormComponents = <T extends FieldValues>(
 
   interface SelectProps {
     name: Path<T>;
+    label?: string;
     items: { [key: string]: any }[];
     valueKey?: string;
     labelKey?: string;
   }
 
-  const Select = ({ name, items, valueKey, labelKey }: SelectProps) => (
+  const Select = ({ name, label, items, valueKey, labelKey }: SelectProps) => (
     <div className="form-control w-full">
       <select
         className="select select-sm select-bordered ms-2"
         {...register(name)}
       >
-        <option value={""}>Select a {reformatString(name)}</option>
+        <option value={""}>Select a {label || reformatString(name)}</option>
         {items.map((item) => (
           <option
             key={item[valueKey || "value"]}

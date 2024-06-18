@@ -22,6 +22,7 @@ model User {
   tutorials     Tutorial[]
   Session       Session[]
   Authenticator Authenticator[]
+  ContestUser   ContestModerator[]
 }
 
 model Contest {
@@ -35,9 +36,21 @@ model Contest {
 
   user User @relation(fields: [userId], references: [id])
 
+  moderators  ContestModerator[]
   problems    ContestProblem[]
   submissions Submission[]
   tutorials   Tutorial[]
+}
+
+model ContestModerator {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  contestId String @db.ObjectId
+  userId    String @db.ObjectId
+
+  contest Contest @relation(fields: [contestId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@unique([contestId, userId])
 }
 
 model Problem {

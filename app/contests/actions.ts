@@ -18,8 +18,14 @@ export const createOrUpdateContest = async (
   if (!validation.success) {
     return { ok: false, message: validation.error.toString() };
   }
-  const data = { ...validation.data, problems: undefined };
+  const data = {
+    ...validation.data,
+    problems: undefined,
+    moderators: undefined,
+  };
   const problems = validation.data.problems || [];
+  const moderators = validation.data.moderators || [];
+  console.log(moderators);
   if (contestId) {
     const contest = await prisma.contest.findUnique({
       where: {
@@ -40,11 +46,24 @@ export const createOrUpdateContest = async (
         },
         data,
       });
+      await prisma.contestModerator.deleteMany({
+        where: {
+          contestId,
+        },
+      });
       await prisma.contestProblem.deleteMany({
         where: {
           contestId,
         },
       });
+      if (moderators.length > 0) {
+        await prisma.contestModerator.createMany({
+          data: moderators.map((moderator) => ({
+            contestId: contestId,
+            userId: moderator.userId!,
+          })),
+        });
+      }
       if (problems.length > 0) {
         await prisma.contestProblem.createMany({
           data: problems.map((problem) => ({
@@ -68,6 +87,11 @@ export const createOrUpdateContest = async (
             create: problems.map((problem) => ({
               problemId: problem.problemId!,
               problemIndex: problem.problemIndex!,
+            })),
+          },
+          moderators: {
+            create: moderators.map((moderator) => ({
+              userId: moderator.userId!,
             })),
           },
         },
