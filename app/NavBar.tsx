@@ -4,6 +4,7 @@ import { Skeleton } from "@/components";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 export const navLinks = [
   {
@@ -120,7 +121,9 @@ const AuthStatus = () => {
         className="btn btn-ghost btn-sm btn-circle avatar -m-2"
       >
         <div className="w-10 rounded-full">
-          <img
+          <Image
+            height={24}
+            width={24}
             alt="Tailwind CSS Navbar component"
             src={session?.user?.image || ""}
           />

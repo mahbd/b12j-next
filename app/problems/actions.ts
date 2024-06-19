@@ -9,9 +9,7 @@ export const createOrUpdateProblem = async (
   dataStr: string,
   problemId?: string
 ) => {
-  const user = await isLogged(
-    `/api/auth/signin?callbackUrl=/problems/${problemId || "new"}/edit`
-  );
+  const user = await isLogged(`/problems/${problemId || "new"}/edit`);
 
   const jsonData = JSON.parse(dataStr);
   const validation = problemSchema.safeParse(jsonData);

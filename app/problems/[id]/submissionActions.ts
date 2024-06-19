@@ -8,13 +8,14 @@ import { Verdict } from "@prisma/client";
 export const createSubmission = async (
   dataStr: string
 ): Promise<{ ok: boolean; message: string }> => {
-  const user = await isLogged(`/api/auth/signin?callbackUrl=/problems/`);
   const jsonData = JSON.parse(dataStr);
   const validation = submissionSchema.safeParse(jsonData);
   if (!validation.success) {
     return { ok: false, message: validation.error.toString() };
   }
   const data = validation.data;
+  // check authentication
+  const user = await isLogged(`/problems/${data.problemId}`);
 
   try {
     const submission = await prisma.submission.create({

@@ -64,10 +64,14 @@ export const JUDGE0ERROR_MAP = {
 };
 
 export const isLogged = async (callbackUrl: string) => {
+  // if (!base) {
+  //   base = "/api/auth/user?callbackUrl=";
+  // }
+  const base = "/api/auth/user?callbackUrl=";
   const session = await auth();
   const user = session && session.user;
   if (!user) {
-    redirect(callbackUrl);
+    redirect(base + callbackUrl);
   }
   const prismaUser = await prisma.user.findUnique({
     where: {
@@ -89,6 +93,9 @@ export const permissionOwner = (
   return user.id === content.userId;
 };
 
+/**
+ * @returns true if user is the owner or staff
+ */
 export const permissionOwnerStaff = (
   user: User | undefined | null,
   content: { userId: string }

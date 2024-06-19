@@ -10,9 +10,7 @@ interface Props {
 }
 
 const TestCases = async ({ params: { id: problemId } }: Props) => {
-  const user = await isLogged(
-    `/api/auth/signin?callbackUrl=/problems/${problemId}/test-cases`
-  );
+  const user = await isLogged(`/problems/${problemId}/test-cases`);
   const problem = await prisma.problem.findUnique({
     where: { id: problemId },
   });

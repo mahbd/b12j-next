@@ -3,20 +3,20 @@
 import prisma from "@/prisma/client";
 import { testCaseSchema } from "./testCaseSchema";
 import { notFound, redirect } from "next/navigation";
-import { isLogged } from "@/components/helpers";
+import { isLogged, permissionOwnerStaff } from "@/components/helpers";
 
 export const createOrUpdateTestCase = async (
   dataStr: string,
   testCaseId?: string
 ) => {
-  const user = await isLogged(`/api/auth/signin?callbackUrl=/problems/`);
-
   const jsonData = JSON.parse(dataStr);
   const validation = testCaseSchema.safeParse(jsonData);
   if (!validation.success) {
     return { ok: false, message: validation.error.toString() };
   }
   const data = validation.data;
+  // check authentication
+  const user = await isLogged(`/problems/${data.problemId}`);
 
   const problem = await prisma.problem.findUnique({
     where: {
@@ -26,7 +26,7 @@ export const createOrUpdateTestCase = async (
   if (!problem) {
     notFound();
   }
-  if (problem.userId !== user.id) {
+  if (!permissionOwnerStaff(user, problem)) {
     return redirect("/denied");
   }
   try {

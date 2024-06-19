@@ -9,9 +9,7 @@ export const createOrUpdateContest = async (
   dataStr: string,
   contestId?: string
 ) => {
-  const user = await isLogged(
-    `/api/auth/signin?callbackUrl=/contests/${contestId || "new"}/edit`
-  );
+  const user = await isLogged(`/contests/${contestId || "new"}/edit`);
 
   const jsonData = JSON.parse(dataStr);
   const validation = contestSchema.safeParse(jsonData);
