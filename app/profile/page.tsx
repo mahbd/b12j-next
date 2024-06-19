@@ -1,3 +1,4 @@
+import ChangeTheme from "@/components/ChangeTheme";
 import { isLogged } from "@/components/helpers";
 import prisma from "@/prisma/client";
 import Link from "next/link";
@@ -27,6 +28,7 @@ const ProfilePage = async () => {
 
   return (
     <div className="horizontal-center lg:max-w-4xl w-full mx-5 md:mx-10 lg:mx-auto p-2">
+      <ChangeTheme />
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 mt-2">
         <Link href={"/contests/new/edit"} className="btn btn-sm btn-primary">
           Start Contest

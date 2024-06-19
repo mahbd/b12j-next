@@ -1,7 +1,4 @@
-import { auth } from "@/auth";
-
 const Home = async () => {
-  const session = await auth();
   return (
     <div
       className="flex justify-center items-center text-2xl text-center w-full"
@@ -9,9 +6,9 @@ const Home = async () => {
     >
       <div className="flex-col content-between">
         <p className="font-extrabold mb-2 text-4xl md:text-8xl">
-          Welcome to B12J
+          Welcome to CPCCB
         </p>
-        <p>Online judge for beginners</p>
+        <p>An Online Judge for Beginners</p>
       </div>
     </div>
   );

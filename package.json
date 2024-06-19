@@ -26,6 +26,7 @@
     "react-markdown": "^9.0.1",
     "react-simplemde-editor": "^5.2.0",
     "rehype-raw": "^7.0.0",
+    "theme-change": "^2.5.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
