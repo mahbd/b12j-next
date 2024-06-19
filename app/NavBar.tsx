@@ -3,14 +3,9 @@
 import { Skeleton } from "@/components";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useState } from "react";
-import { IoMdMenu, IoMdClose } from "react-icons/io";
+import { usePathname } from "next/navigation";
 
 export const navLinks = [
-  {
-    id: "/",
-    title: "Home",
-  },
   {
     id: "/contests",
     title: "Contests",
@@ -30,28 +25,19 @@ export const navLinks = [
 ];
 
 const Navbar = () => {
-  const [active, setActive] = useState("Home");
-  const [toggle, setToggle] = useState(false);
+  const pathname = usePathname();
 
   return (
-    <div className="bg-black text-white">
+    <div>
       {/* Desktop Navigation */}
-      <nav
-        className="sm:flex hidden navbar px-5"
-        style={{
-          minHeight: "40px",
-        }}
-      >
+      <nav className="sm:flex hidden navbar px-5 py-0 bg-base-200 min-h-8">
         <div className="navbar-start">
+          <Link href={"/"} className="btn btn-ghost btn-sm text-lg font-medium">
+            CPCCB
+          </Link>
           {navLinks.map((nav) => (
-            <span
-              key={nav.id}
-              className="mx-1"
-              onClick={() => setActive(nav.title)}
-            >
-              <a href={`${nav.id}`} className="text-white">
-                {nav.title}
-              </a>
+            <span key={nav.id} className="mx-1">
+              <a href={`${nav.id}`}>{nav.title}</a>
             </span>
           ))}
         </div>
@@ -61,35 +47,55 @@ const Navbar = () => {
       </nav>
 
       {/* Mobile Navigation */}
-      <nav className="sm:hidden flex flex-1 justify-end items-center">
-        <button
-          className="w-[28px] h-[28px] object-contain"
-          onClick={() => setToggle(!toggle)}
-        >
-          {toggle ? <IoMdClose /> : <IoMdMenu />}
-        </button>
-
-        {/* Sidebar */}
-        <div
-          className={`${
-            !toggle ? "hidden" : "flex"
-          } p-6 bg-black-gradient absolute top-20 right-0 mx-4 my-2 min-w-[140px] rounded-xl sidebar`}
-        >
-          <ul className="list-none flex justify-end items-start flex-1 flex-col">
-            {navLinks.map((nav, index) => (
-              <li
-                key={nav.id}
-                className={`font-poppins font-medium cursor-pointer text-[16px] ${
-                  active === nav.title ? "text-white" : "text-dimWhite"
-                } ${index === navLinks.length - 1 ? "mb-0" : "mb-4"}`}
-                onClick={() => setActive(nav.title)}
+      <div className="navbar bg-base-200 sm:hidden flex min-h-4 py-1">
+        <div className="navbar-start">
+          <div className="dropdown">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-sm btn-circle"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-                <a href={`#${nav.id}`}>{nav.title}</a>
-              </li>
-            ))}
-          </ul>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h7"
+                />
+              </svg>
+            </div>
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content mt-3 z-[1] shadow bg-base-100 rounded-box w-52"
+            >
+              {navLinks.map((nav, index) => (
+                <li
+                  key={nav.id}
+                  className={`font-poppins cursor-pointer text-[16px] ${
+                    pathname.search(nav.id) === 0 ? "font-bold" : ""
+                  } ${index === navLinks.length - 1 ? "mb-0" : "mb-4"}`}
+                >
+                  <a href={`${nav.id}`}>{nav.title}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-      </nav>
+        <div className="navbar-center">
+          <Link href={"/"} className="btn btn-ghost btn-sm text-lg font-medium">
+            CPCCB
+          </Link>
+        </div>
+        <div className="navbar-end">
+          <AuthStatus />
+        </div>
+      </div>
     </div>
   );
 };
@@ -107,34 +113,35 @@ const AuthStatus = () => {
       </Link>
     );
   return (
-    <Link href={"/api/auth/signout"} className="nav-link">
-      Logout
-    </Link>
+    <div className="dropdown dropdown-end max-h-4">
+      <div
+        tabIndex={0}
+        role="button"
+        className="btn btn-ghost btn-sm btn-circle avatar -m-2"
+      >
+        <div className="w-10 rounded-full">
+          <img
+            alt="Tailwind CSS Navbar component"
+            src={session?.user?.image || ""}
+          />
+        </div>
+      </div>
+      <ul
+        tabIndex={0}
+        className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+      >
+        <li>
+          <Link href={"/profile"} className="justify-between">
+            Profile
+            <span className="badge">New</span>
+          </Link>
+        </li>
+        <li>
+          <Link href={"/api/auth/signout"} className="nav-link">
+            Logout
+          </Link>
+        </li>
+      </ul>
+    </div>
   );
-  // return (
-  //   <details className="dropdown dropdown-left bg-none">
-  //     <summary>
-  //       <div className="avatar">
-  //         <div className="h-8">
-  //           <Image
-  //             height="20"
-  //             width="20"
-  //             alt="This is profile pic"
-  //             src={session!.user!.image!}
-  //           />
-  //         </div>
-  //       </div>
-  //     </summary>
-  //     <ul className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52">
-  //       <li>
-  //         <p>{session!.user!.email}</p>
-  //       </li>
-  //       <li>
-  //         <Link href={"/api/auth/signout"} className="nav-link">
-  //           Logout
-  //         </Link>
-  //       </li>
-  //     </ul>
-  //   </details>
-  // );
 };
