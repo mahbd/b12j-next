@@ -1,17 +1,23 @@
 import { readableDateTime } from "@/components/helpers";
 import prisma from "@/prisma/client";
+import { Metadata, ResolvingMetadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 
 interface Props {
   params: { id: string };
 }
 
-const SubmissionPage = async ({ params }: Props) => {
-  const submission = await prisma.submission.findUnique({
-    where: { id: params.id },
+const fetchSubmission = cache((id: string) =>
+  prisma.submission.findUnique({
+    where: { id: id },
     include: { user: true, problem: true },
-  });
+  })
+);
+
+const SubmissionPage = async ({ params }: Props) => {
+  const submission = await fetchSubmission(params.id);
 
   if (!submission) {
     notFound();
@@ -60,3 +66,19 @@ const SubmissionPage = async ({ params }: Props) => {
 };
 
 export default SubmissionPage;
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const id = params.id;
+  const previousImages = (await parent).openGraph?.images || [];
+  const submission = await fetchSubmission(id);
+
+  return {
+    title: `${submission?.problem.title || "Unknown Problem"} Submission`,
+    openGraph: {
+      images: [...previousImages],
+    },
+  };
+}

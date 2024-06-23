@@ -18,7 +18,7 @@ export default function RootLayout({
       <body>
         <AuthProvider>
           <NavBar />
-          <div className="md:flex md:gap-4">
+          <div className="horizontal-center lg:max-w-4xl w-full mx-5 md:mx-10 lg:mx-auto p-2">
             {/* <div className="hidden md:block">
               <Sidebar />
             </div> */}

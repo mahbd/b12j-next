@@ -77,10 +77,10 @@ model Problem {
 model Tutorial {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   contestId   String?  @db.ObjectId
-  createdAt   DateTime
-  hiddenTill  DateTime
-  problemId   String?  @db.ObjectId
+  createdAt   DateTime @default(now())
   description String
+  isHidden    Boolean  @default(false)
+  problemId   String?  @db.ObjectId
   title       String
   userId      String   @db.ObjectId
 

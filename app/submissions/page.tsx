@@ -23,12 +23,10 @@ const SubmissionsPage = async ({ searchParams }: Props) => {
     skip: searchParams?.offset ? parseInt(searchParams.offset) : 0,
   });
   return (
-    <div className="horizontal-center max-w-4xl w-full">
-      <div className="card w-full bg-base-100 shadow-xl mt-5">
-        <div className="card-body">
-          <p className="card-title text-sm">Problem set</p>
-          <SubmissionsTable submissions={submissions} />
-        </div>
+    <div className="card w-full bg-base-100 shadow-xl mt-5">
+      <div className="card-body">
+        <p className="card-title text-sm">Submissions</p>
+        <SubmissionsTable submissions={submissions} />
       </div>
     </div>
   );
