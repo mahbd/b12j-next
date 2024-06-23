@@ -23,10 +23,15 @@ const SubmissionsPage = async ({ searchParams }: Props) => {
     skip: searchParams?.offset ? parseInt(searchParams.offset) : 0,
   });
   return (
-    <div className="card w-full bg-base-100 shadow-xl mt-5">
-      <div className="card-body">
-        <p className="card-title text-sm">Submissions</p>
-        <SubmissionsTable submissions={submissions} />
+    <div className="mt-2">
+      <p className="text-lg text-center font-bold mb-5">Submissions</p>
+      <SubmissionsTable submissions={submissions} />
+      <div className="ms-5">
+        <Pagination
+          itemCount={itemCount}
+          limit={searchParams?.limit ? parseInt(searchParams.limit) : 10}
+          offset={searchParams?.offset ? parseInt(searchParams.offset) : 0}
+        />
       </div>
     </div>
   );
@@ -52,7 +57,7 @@ const SubmissionsTable = async ({
           <tr>
             <th>Submission ID</th>
             <th>Time</th>
-            {/* <th>User</th> */}
+            <th>User</th>
             <th>Problem</th>
             <th>Language</th>
             <th>Verdict</th>
@@ -70,7 +75,7 @@ const SubmissionsTable = async ({
                 </Link>
               </td>
               <td>{readableDateTime(submission.createdAt.toISOString())}</td>
-              {/* <td>{submission.user.name}</td> */}
+              <td>{submission.user.name}</td>
               <td>
                 <Link
                   className="link link-primary"
@@ -88,48 +93,5 @@ const SubmissionsTable = async ({
     </div>
   );
 };
-
-//   return (
-//     <div>
-//       <h1 className="text-center">Submission List</h1>
-//       <table className="table table-md table-auto w-auto">
-//         <thead>
-//           <tr>
-//             <th>Submission ID</th>
-//             <th>Time</th>
-//             <th>User</th>
-//             <th>Problem</th>
-//             <th>Language</th>
-//             <th>Verdict</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {submissions.map((submission) => (
-//             <tr key={submission.id}>
-//               <td>{submission.id}</td>
-//               <td>{readableDateTime(submission.createdAt.toISOString())}</td>
-//               <td>{submission.user.email}</td>
-//               <td>
-//                 <Link
-//                   className="link link-primary"
-//                   href={`/problems/${submission.problemId}`}
-//                 >
-//                   {submission.problem.title}
-//                 </Link>
-//               </td>
-//               <td>{submission.language}</td>
-//               <td>{submission.verdict}</td>
-//             </tr>
-//           ))}
-//         </tbody>
-//       </table>
-//       <Pagination
-//         itemCount={itemCount}
-//         limit={searchParams?.limit ? parseInt(searchParams.limit) : 10}
-//         offset={searchParams?.offset ? parseInt(searchParams.offset) : 0}
-//       />
-//     </div>
-//   );
-// };
 
 export default SubmissionsPage;
