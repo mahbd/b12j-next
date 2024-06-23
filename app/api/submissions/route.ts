@@ -1,6 +1,6 @@
 import prisma from "@/prisma/client";
 import { Verdict } from "@prisma/client";
-import { requestJudge0 } from "@/app/problems/[id]/submissionActions";
+import { requestJudge0 } from "@/app/submissions/submissionActions";
 
 interface J0Callback {
   stdout: string | null;

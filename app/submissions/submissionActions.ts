@@ -74,24 +74,51 @@ export const requestJudge0 = async (
     callback_url: callbackUrl,
   });
 
-  await fetch(
-    `${JUDGE0_URL}/submissions?base64_encoded=true&X-Auth-User=${JUDGE0_KEY}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body,
-    }
-  );
+  try {
+    await fetch(
+      `${JUDGE0_URL}/submissions?base64_encoded=true&X-Auth-User=${JUDGE0_KEY}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body,
+      }
+    );
 
-  await prisma.submission.update({
+    await prisma.submission.update({
+      where: {
+        id: submissionId,
+      },
+      data: {
+        verdict: Verdict.RUNNING,
+        details: `Running test case ${testNumber + 1}...`,
+      },
+    });
+  } catch (e: any) {
+    console.error(e);
+    return { ok: false, message: e.toString() };
+  }
+};
+
+export const judgeBatchSubmissions = async (submissions: string[]) => {
+  for (const submissionId of submissions) {
+    await requestJudge0(0, submissionId);
+  }
+  return { ok: true, message: "Judging started" };
+};
+
+export const deleteSubmission = async (submissionId: string) => {
+  await prisma.submission.delete({
     where: {
       id: submissionId,
     },
-    data: {
-      verdict: Verdict.RUNNING,
-      details: `Running test case ${testNumber + 1}...`,
-    },
   });
+};
+
+export const batchDeleteSubmissions = async (submissions: string[]) => {
+  for (const submissionId of submissions) {
+    await deleteSubmission(submissionId);
+  }
+  return { ok: true, message: "Submissions deleted" };
 };

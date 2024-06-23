@@ -1,6 +1,6 @@
 import prisma from "@/prisma/client";
 import { notFound, redirect } from "next/navigation";
-import SubmissionForm from "./SubmissionForm";
+import SubmissionForm from "../../submissions/SubmissionForm";
 import Link from "next/link";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";

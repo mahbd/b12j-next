@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { Role, User } from "@prisma/client";
 
 export const navLinks = [
   {
@@ -107,12 +108,14 @@ const AuthStatus = () => {
   const { status, data: session } = useSession();
 
   if (status === "loading") return <Skeleton width={"3rem"} height={"20px"} />;
-  if (status === "unauthenticated")
+  if (status === "unauthenticated" || !session || !session.user)
     return (
       <Link href={"/api/auth/signin"} className="nav-link">
         Login
       </Link>
     );
+
+  const user: User = session.user as User;
   return (
     <div className="dropdown dropdown-end max-h-4">
       <div
@@ -125,7 +128,7 @@ const AuthStatus = () => {
             height={24}
             width={24}
             alt="Tailwind CSS Navbar component"
-            src={session?.user?.image || ""}
+            src={user.image || ""}
           />
         </div>
       </div>
@@ -139,6 +142,14 @@ const AuthStatus = () => {
             <span className="badge">New</span>
           </Link>
         </li>
+        {(user.role === Role.ADMIN || user.role === Role.STAFF) && (
+          <li>
+            <Link href={"/admin"} className="justify-between">
+              Admin Panel
+              <span className="badge">New</span>
+            </Link>
+          </li>
+        )}
         <li>
           <Link href={"/api/auth/signout"} className="nav-link">
             Logout
