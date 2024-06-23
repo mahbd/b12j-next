@@ -16,6 +16,13 @@ export const createOrUpdateTutorial = async (
   if (!validation.success) {
     return { ok: false, message: validation.error.toString() };
   }
+  if (validation.data.problemId === "") {
+    validation.data.problemId = undefined;
+  }
+  if (validation.data.contestId === "") {
+    validation.data.contestId = undefined;
+  }
+
   if (tutorialId) {
     const tutorial = await prisma.tutorial.findUnique({
       where: {

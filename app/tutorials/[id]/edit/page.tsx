@@ -43,7 +43,21 @@ const EditTutorial = async ({ params: { id } }: Props) => {
 
 export default EditTutorial;
 
-export const metadata: Metadata = {
-  title: "Update Tutorial",
-  description: "Update a tutorial",
-};
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  if (params.id === "new") {
+    return {
+      title: "New Tutorial",
+    };
+  }
+  const tutorial = await prisma.tutorial.findUnique({
+    where: { id: params.id },
+  });
+  if (!tutorial) {
+    return {
+      title: "Tutorial not found",
+    };
+  }
+  return {
+    title: `Update Tutorial: ${tutorial.title}`,
+  };
+}

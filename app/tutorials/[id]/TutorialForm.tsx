@@ -21,10 +21,10 @@ const TutorialForm = ({ tutorial, contests, problems }: Props) => {
     handleSubmit,
     setIsSubmitting,
   } = useFormComponents<TutorialFormData>(tutorialSchema, {
-    contestId: tutorial?.contestId || "",
+    contestId: tutorial?.contestId || undefined,
     description: tutorial?.description || "",
     isHidden: tutorial?.isHidden || true,
-    problemId: tutorial?.problemId || "",
+    problemId: tutorial?.problemId || undefined,
     title: tutorial?.title || "",
   });
 

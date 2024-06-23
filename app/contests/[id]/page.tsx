@@ -30,7 +30,7 @@ const Contest = async ({ params: { id } }: Props) => {
   }
 
   return (
-    <div className="horizontal-center lg:max-w-4xl w-full mx-5 md:mx-10 lg:mx-auto p-2">
+    <div>
       {session && session.user?.id === contest.userId && (
         <div className="flex justify-end mt-2">
           <Link
